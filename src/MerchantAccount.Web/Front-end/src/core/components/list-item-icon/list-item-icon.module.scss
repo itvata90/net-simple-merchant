@@ -1,0 +1,18 @@
+.list-item {
+  display: flex;
+  align-items: center;
+}
+
+.list-item-icon {
+  // min-width: 56px;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 1.5rem;
+}
+
+.list-item-text {
+  // min-width: 56px;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 1rem;
+}

@@ -1,0 +1,17 @@
+.list-nested-hint {
+  color: var(--bs-btn-hover-color);
+  background-color: rgba(127, 127, 127, 0.2);
+  opacity: 0.8;
+}
+.list-nested-active {
+  color: var(--bs-btn-hover-color) !important;
+  background-color: rgba(127, 127, 127, 0.2) !important;
+}
+
+.list-nested-arrow {
+  transition: 0.4s;
+}
+
+.list-nested-arrow-active {
+  transform: rotate(-90deg);
+}

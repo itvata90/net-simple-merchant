@@ -1,0 +1,11 @@
+.list-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s all;
+}
+
+.list-item:hover {
+  color: var(--bs-btn-hover-color);
+  background-color: rgba(127, 127, 127, 0.2);
+}

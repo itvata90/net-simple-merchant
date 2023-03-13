@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.5" />
+		<ProjectReference Include="..\MerchantAccount.Common\MerchantAccount.Common.csproj" />
+		<ProjectReference Include="..\MerchantAccount.Infrastructure\MerchantAccount.Infrastructure.csproj" />
+		<ProjectReference Include="..\MerchantAccount.Persistence\MerchantAccount.Persistence.csproj" />
+		<ProjectReference Include="..\MerchantAccount.Application\MerchantAccount.Application.csproj" />
+	</ItemGroup>
+
+</Project>

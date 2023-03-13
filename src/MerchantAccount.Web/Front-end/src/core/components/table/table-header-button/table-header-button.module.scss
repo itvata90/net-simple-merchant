@@ -1,0 +1,10 @@
+.sort-button,
+.filter-button {
+  aspect-ratio: 1;
+  line-height: 0;
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantAccount.Application", "src\MerchantAccount.Application\MerchantAccount.Application.csproj", "{59481D2C-DD4E-4AA1-A081-F0DE755714F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantAccount.Common", "src\MerchantAccount.Common\MerchantAccount.Common.csproj", "{4325D320-6600-44E6-820A-5222F76714FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantAccount.Domain", "src\MerchantAccount.Domain\MerchantAccount.Domain.csproj", "{AC958FEA-FCC2-4E8E-B4BE-BF4F65710D59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantAccount.Infrastructure", "src\MerchantAccount.Infrastructure\MerchantAccount.Infrastructure.csproj", "{1D605E01-223D-4E9E-A35F-0498DAF815A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantAccount.Persistence", "src\MerchantAccount.Persistence\MerchantAccount.Persistence.csproj", "{CF1AB699-20A3-4BD7-B7B1-B3CAAF9303DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantAccount.Web", "src\MerchantAccount.Web\MerchantAccount.Web.csproj", "{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59481D2C-DD4E-4AA1-A081-F0DE755714F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59481D2C-DD4E-4AA1-A081-F0DE755714F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59481D2C-DD4E-4AA1-A081-F0DE755714F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59481D2C-DD4E-4AA1-A081-F0DE755714F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4325D320-6600-44E6-820A-5222F76714FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4325D320-6600-44E6-820A-5222F76714FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4325D320-6600-44E6-820A-5222F76714FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4325D320-6600-44E6-820A-5222F76714FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC958FEA-FCC2-4E8E-B4BE-BF4F65710D59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC958FEA-FCC2-4E8E-B4BE-BF4F65710D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC958FEA-FCC2-4E8E-B4BE-BF4F65710D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC958FEA-FCC2-4E8E-B4BE-BF4F65710D59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D605E01-223D-4E9E-A35F-0498DAF815A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D605E01-223D-4E9E-A35F-0498DAF815A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D605E01-223D-4E9E-A35F-0498DAF815A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D605E01-223D-4E9E-A35F-0498DAF815A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF1AB699-20A3-4BD7-B7B1-B3CAAF9303DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF1AB699-20A3-4BD7-B7B1-B3CAAF9303DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF1AB699-20A3-4BD7-B7B1-B3CAAF9303DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF1AB699-20A3-4BD7-B7B1-B3CAAF9303DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{59481D2C-DD4E-4AA1-A081-F0DE755714F8} = {CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}
+		{4325D320-6600-44E6-820A-5222F76714FF} = {CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}
+		{AC958FEA-FCC2-4E8E-B4BE-BF4F65710D59} = {CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}
+		{1D605E01-223D-4E9E-A35F-0498DAF815A3} = {CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}
+		{CF1AB699-20A3-4BD7-B7B1-B3CAAF9303DF} = {CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}
+		{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA} = {CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}
+	EndGlobalSection
+EndGlobal

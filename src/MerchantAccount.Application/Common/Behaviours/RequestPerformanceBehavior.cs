@@ -1,0 +1,37 @@
+using System.Diagnostics;
+using MediatR;
+using Microsoft.Extensions.Logging;
+namespace MerchantAccount.Application.Common.Behaviours;
+
+public class RequestPerformanceBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+ where TRequest : IRequest<TResponse>
+{
+	private readonly Stopwatch _timer;
+	private readonly ILogger<TRequest> _logger;
+
+	public RequestPerformanceBehavior(ILogger<TRequest> logger)
+	{
+		_timer = new Stopwatch();
+
+		_logger = logger;
+	}
+
+	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+	{
+		_timer.Start();
+
+		TResponse response = await next();
+
+		_timer.Stop();
+
+		if (_timer.ElapsedMilliseconds > 500)
+		{
+			string name = typeof(TRequest).Name;
+
+			// TODO: Add User Details
+			_logger.LogWarning("Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}", name, _timer.ElapsedMilliseconds, request);
+		}
+
+		return response;
+	}
+}

@@ -1,0 +1,18 @@
+.list-item-text {
+  min-width: 56px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.list-item-text > * {
+  display: inline-block;
+}
+
+.list-item-text .list-item-primary {
+}
+
+.list-item-text .list-item-secondary {
+  opacity: 0.8;
+}
