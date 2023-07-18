@@ -7,13 +7,11 @@ namespace MerchantAccount.Application.Merchants.Commands.CreateMerchant;
 
 public class CreateMerchantCommandHandler : IRequestHandler<CreateMerchantCommand, MerchantDto>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMerchantRepository _merchantRepository;
 	private readonly IMapper _mapper;
 
-	public CreateMerchantCommandHandler(IApplicationDbContext applicationDbContext, IMerchantRepository merchantRepository, IMapper mapper)
+	public CreateMerchantCommandHandler(IMerchantRepository merchantRepository, IMapper mapper)
 	{
-		_applicationDbContext = applicationDbContext;
 		_merchantRepository = merchantRepository;
 		_mapper = mapper;
 	}
@@ -33,7 +31,7 @@ public class CreateMerchantCommandHandler : IRequestHandler<CreateMerchantComman
 		};
 
 		_merchantRepository.Add(merchant);
-		_ = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+		_ = await _merchantRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<MerchantDto>(merchant);
 	}

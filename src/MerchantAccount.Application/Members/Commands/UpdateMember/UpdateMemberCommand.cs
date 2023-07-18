@@ -3,8 +3,10 @@ using MediatR;
 
 namespace MerchantAccount.Application.Members.Commands.UpdateMember;
 
-public sealed record UpdateMemberCommand(
-	int Id,
-	string Username,
-	string FirstName,
-	string LastName) : IRequest<MemberDto>;
+public class UpdateMemberCommand : IRequest<MemberDto>
+{
+	public int Id { get; set; }
+	public string Username { get; set; }
+	public string FirstName { get; set; }
+	public string LastName { get; set; }
+}

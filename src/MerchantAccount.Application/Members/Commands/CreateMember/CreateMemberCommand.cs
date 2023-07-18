@@ -3,7 +3,9 @@ using MediatR;
 
 namespace MerchantAccount.Application.Members.Commands.CreateMember;
 
-public sealed record CreateMemberCommand(
-	string Username,
-	string FirstName,
-	string LastName) : IRequest<MemberDto>;
+public class CreateMemberCommand : IRequest<MemberDto>
+{
+	public string Username { get; set; }
+	public string FirstName { get; set; }
+	public string LastName { get; set; }
+}

@@ -4,22 +4,38 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<SpaRoot>ClientApp\</SpaRoot>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <!-- <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" /> -->
+	<PackageReference Include="NSwag.AspNetCore" Version="13.18.2" />
+	<PackageReference Include="NSwag.MSBuild" Version="13.18.2">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+	<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.13" />
+	<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		<PrivateAssets>all</PrivateAssets>
+	</PackageReference>
+
   </ItemGroup>
 
   <ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.5" />
-		<ProjectReference Include="..\MerchantAccount.Common\MerchantAccount.Common.csproj" />
-		<ProjectReference Include="..\MerchantAccount.Infrastructure\MerchantAccount.Infrastructure.csproj" />
-		<ProjectReference Include="..\MerchantAccount.Persistence\MerchantAccount.Persistence.csproj" />
-		<ProjectReference Include="..\MerchantAccount.Application\MerchantAccount.Application.csproj" />
+		<AdditionalFiles Include="stylecop.json" />
+	</ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.5" />
+	<ProjectReference Include="..\MerchantAccount.Common\MerchantAccount.Common.csproj" />
+	<ProjectReference Include="..\MerchantAccount.Infrastructure\MerchantAccount.Infrastructure.csproj" />
+	<ProjectReference Include="..\MerchantAccount.Persistence\MerchantAccount.Persistence.csproj" />
+	<ProjectReference Include="..\MerchantAccount.Application\MerchantAccount.Application.csproj" />
 	</ItemGroup>
 
 </Project>

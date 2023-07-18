@@ -17,6 +17,6 @@ public class MemberDetailDto : IMapFrom<MemberDetail>
 
 	public void Mapping(Profile profile)
 	{
-		_ = profile.CreateMap<MemberDetail, MemberDetailDto>();
+		_ = profile.CreateMap<MemberDetail, MemberDetailDto>().ForMember(d => d.BirthDay, act => act.Ignore());
 	}
 }

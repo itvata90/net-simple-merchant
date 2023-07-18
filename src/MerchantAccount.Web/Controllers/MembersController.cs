@@ -1,6 +1,4 @@
 
-using System.Net.Http.Headers;
-using System.Data;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MerchantAccount.Application.Members.Commands.CreateMember;
@@ -13,6 +11,7 @@ using MerchantAccount.Application.Members.Queries.GetMembers;
 using MerchantAccount.Application.MemberDetails.Commands.CreateMemberDetail;
 using MerchantAccount.Application.MemberDetails.Models;
 using MerchantAccount.Application.MemberDetails.Queries.GetMemberDetailByMemberId;
+using NSwag.Annotations;
 
 namespace MerchantAccount.Web.Controllers;
 
@@ -30,6 +29,7 @@ public class MembersController : ControllerBase
 	[HttpGet]
 	[ResponseCache(Duration = 600)]
 	[ProducesResponseType(StatusCodes.Status200OK)]
+	[OpenApiOperation("GetMembers_NameForClientCall")]
 	public async Task<ActionResult<IEnumerable<MemberDto>>> GetMembers(int limit, int offset)
 	{
 		var members = await _mediator.Send(new GetMembersQuery(limit, offset));
@@ -76,11 +76,8 @@ public class MembersController : ControllerBase
 	[HttpPut("{id}")]
 	public async Task<ActionResult<MemberDto>> PutMember(int id, [FromBody] UpdateMemberCommand command)
 	{
-		return Ok(await _mediator.Send(new UpdateMemberCommand(
-			id,
-			command.Username,
-			command.FirstName,
-			command.LastName)));
+		command.Id = id;
+		return Ok(await _mediator.Send(command));
 	}
 
 	[HttpDelete("{id}")]

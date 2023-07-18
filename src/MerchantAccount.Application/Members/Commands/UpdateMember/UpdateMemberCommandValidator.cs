@@ -6,17 +6,19 @@ namespace MerchantAccount.Application.Members.Commands.UpdateMember;
 
 public class UpdateMemberCommandValidator : AbstractValidator<UpdateMemberCommand>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMemberRepository _memberRepository;
 
-	public UpdateMemberCommandValidator(IApplicationDbContext applicationDbContext, IMemberRepository memberRepository)
+	public UpdateMemberCommandValidator(IMemberRepository memberRepository)
 	{
-		_applicationDbContext = applicationDbContext;
 		_memberRepository = memberRepository;
+
+		_ = RuleFor(member => member.Username)
+		 .NotEmpty();
 
 		_ = RuleFor(member => new { member.Id, member.Username })
 		 .Must(_ => UserNameMustEnteredAndNotUsed(_.Id, _.Username))
 		 .WithMessage("Username is already used.");
+
 		_ = RuleFor(member => member.Id)
 		 .Must(MemberMustExist)
 		 .WithMessage("Member is not exist.");
@@ -26,7 +28,7 @@ public class UpdateMemberCommandValidator : AbstractValidator<UpdateMemberComman
 	{
 		Member? member = _memberRepository.GetByUsername(username);
 
-		return !string.IsNullOrEmpty(username) && (member == null || member.Id == id);
+		return member == null || member.Id == id;
 	}
 
 	private bool MemberMustExist(int id)

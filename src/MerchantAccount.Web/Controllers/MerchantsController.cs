@@ -1,5 +1,3 @@
-using System.Data;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using MerchantAccount.Application.Merchants.Queries.GetMerchants;
@@ -11,6 +9,7 @@ using MerchantAccount.Application.Merchants.Commands.UpdateMerchant;
 using MerchantAccount.Application.Members.Queries.GetMembersByMerchantId;
 using MerchantAccount.Application.Merchants.Commands.AddMember;
 using MerchantAccount.Application.Merchants.Commands.RemoveMember;
+using NSwag.Annotations;
 
 namespace MerchantAccount.Web.Controllers;
 
@@ -24,30 +23,25 @@ public class MerchantsController : ControllerBase
 	}
 
 	[HttpGet]
+	// this name can be used when we use nswag to generate code client
+	[OpenApiOperation("GetMerchants_NameForClientCall")]
 	public async Task<ActionResult<IEnumerable<MerchantDto>>> GetMerchants(int limit, int offset)
 	{
 		return Ok(await _mediator.Send(new GetMerchantsQuery(limit, offset)));
 	}
 
 	[HttpGet("{id:int}")]
+	[OpenApiOperation("GetMerchant_NameForClientCall")]
 	public async Task<ActionResult<MerchantDto>> GetMerchant(int id)
 	{
 		return Ok(await _mediator.Send(new GetMerchantByIdQuery(id)));
 	}
 
 	[HttpPut("{id:int}")]
-	public async Task<ActionResult<MerchantDto>> GetMerchant(int id, [FromBody] UpdateMerchantCommand command)
+	public async Task<ActionResult<MerchantDto>> UpdateMerchant(int id, [FromBody] UpdateMerchantCommand command)
 	{
-		return Ok(await _mediator.Send(new UpdateMerchantCommand(
-			id,
-			command.OwnerId,
-			command.Name,
-			command.Province,
-			command.District,
-			command.Status,
-			command.Email,
-			command.Phone,
-			command.Status)));
+		command.Id = id;
+		return Ok(await _mediator.Send(command));
 	}
 
 	[HttpPost]

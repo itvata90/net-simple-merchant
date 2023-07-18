@@ -2,7 +2,7 @@ using MerchantAccount.Domain.Entities;
 
 namespace MerchantAccount.Application.Interfaces;
 
-public interface IMemberRepository
+public interface IMemberRepository : IBaseRepository
 {
 	public Task<Member?> GetByIdAsync(int id);
 	public Member? GetById(int id);
@@ -14,5 +14,5 @@ public interface IMemberRepository
 
 	public void Add(Member member);
 	public void Remove(Member member);
-	public Task<int> Count();
+	public Task<int> CountAsync();
 }

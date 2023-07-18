@@ -7,12 +7,10 @@ namespace MerchantAccount.Application.Merchants.Commands.DeleteMerchant;
 
 public class DeleteMerchantCommandHandler : IRequestHandler<DeleteMerchantCommand>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMerchantRepository _merchantRepository;
 
-	public DeleteMerchantCommandHandler(IApplicationDbContext applicationDbContext, IMerchantRepository merchantRepository)
+	public DeleteMerchantCommandHandler(IMerchantRepository merchantRepository)
 	{
-		_applicationDbContext = applicationDbContext;
 		_merchantRepository = merchantRepository;
 	}
 
@@ -28,7 +26,7 @@ public class DeleteMerchantCommandHandler : IRequestHandler<DeleteMerchantComman
 
 		_merchantRepository.Remove(entity);
 
-		_ = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+		_ = await _merchantRepository.SaveChangesAsync(cancellationToken);
 
 		return Unit.Value;
 	}

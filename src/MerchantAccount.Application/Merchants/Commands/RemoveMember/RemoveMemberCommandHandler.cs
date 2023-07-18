@@ -11,14 +11,12 @@ namespace MerchantAccount.Application.Merchants.Commands.RemoveMember;
 
 public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, int>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMemberRepository _memberRepository;
 	private readonly IMerchantRepository _merchantRepository;
 	private readonly IMapper _mapper;
 
-	public RemoveMemberCommandHandler(IApplicationDbContext applicationDbContext, IMemberRepository memberRepository, IMerchantRepository merchantRepository, IMapper mapper)
+	public RemoveMemberCommandHandler(IMemberRepository memberRepository, IMerchantRepository merchantRepository, IMapper mapper)
 	{
-		_applicationDbContext = applicationDbContext;
 		_memberRepository = memberRepository;
 		_merchantRepository = merchantRepository;
 		_mapper = mapper;
@@ -38,7 +36,7 @@ public class RemoveMemberCommandHandler : IRequestHandler<RemoveMemberCommand, i
 		member.MerchantId = null;
 
 
-		_ = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+		_ = await _merchantRepository.SaveChangesAsync(cancellationToken);
 
 		return memberId;
 	}

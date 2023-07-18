@@ -9,16 +9,13 @@ namespace MerchantAccount.Application.Merchants.Queries.GetMerchantById;
 
 public sealed class GetMerchantByIdQueryHandler : IRequestHandler<GetMerchantByIdQuery, MerchantDto>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMerchantRepository _merchantRepository;
 	private readonly IMapper _mapper;
 
 	public GetMerchantByIdQueryHandler(
-		IApplicationDbContext applicationDbContext,
 		IMerchantRepository merchantRepository,
 		IMapper mapper)
 	{
-		_applicationDbContext = applicationDbContext;
 		_merchantRepository = merchantRepository;
 		_mapper = mapper;
 	}

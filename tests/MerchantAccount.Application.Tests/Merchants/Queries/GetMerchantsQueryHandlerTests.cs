@@ -14,13 +14,13 @@ public class GetMerchantsQueryHandlerTests
 {
 	private readonly IMapper _mapper;
 
+	// Tests with ability to mock DB context
+
 	private readonly Mock<IMerchantRepository> _merchantRepositoryMock;
-	private readonly Mock<IApplicationDbContext> _applicationDbContextMock;
 
 	public GetMerchantsQueryHandlerTests()
 	{
 		_merchantRepositoryMock = new();
-		_applicationDbContextMock = new();
 		_mapper = MapperFactory.Create();
 	}
 
@@ -56,7 +56,7 @@ public class GetMerchantsQueryHandlerTests
 		_ = _merchantRepositoryMock.Setup(x => x.GetAllAsync(0, 0)).Returns(Task.FromResult(merchants.AsEnumerable()));
 
 		GetMerchantsQuery query = new(0, 0);
-		GetMerchantsQueryHandler handler = new(_applicationDbContextMock.Object, _merchantRepositoryMock.Object, _mapper);
+		GetMerchantsQueryHandler handler = new(_merchantRepositoryMock.Object, _mapper);
 
 		IEnumerable<MerchantDto> result = await handler.Handle(query, CancellationToken.None);
 

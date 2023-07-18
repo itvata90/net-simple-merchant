@@ -17,6 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantAccount.Persistence
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantAccount.Web", "src\MerchantAccount.Web\MerchantAccount.Web.csproj", "{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5E00EAF2-E1E6-480D-9F15-F5690AA5CB6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantAccount.Application.Tests", "tests\MerchantAccount.Application.Tests\MerchantAccount.Application.Tests.csproj", "{697A8C41-96E2-451D-A688-772ACF2B53F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantAccount.FunctionalTest", "tests\MerchantAccount.FunctionalTest\MerchantAccount.FunctionalTest.csproj", "{A0D54321-9EE1-4796-BF75-70F6E871ACDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +56,14 @@ Global
 		{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{697A8C41-96E2-451D-A688-772ACF2B53F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{697A8C41-96E2-451D-A688-772ACF2B53F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{697A8C41-96E2-451D-A688-772ACF2B53F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{697A8C41-96E2-451D-A688-772ACF2B53F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0D54321-9EE1-4796-BF75-70F6E871ACDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0D54321-9EE1-4796-BF75-70F6E871ACDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0D54321-9EE1-4796-BF75-70F6E871ACDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0D54321-9EE1-4796-BF75-70F6E871ACDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{59481D2C-DD4E-4AA1-A081-F0DE755714F8} = {CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}
@@ -58,5 +72,7 @@ Global
 		{1D605E01-223D-4E9E-A35F-0498DAF815A3} = {CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}
 		{CF1AB699-20A3-4BD7-B7B1-B3CAAF9303DF} = {CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}
 		{DD37C976-81D2-4F60-8A42-0A8EA5F2E1EA} = {CEE594AF-51B0-4EFE-A669-D0A7E3CF01AD}
+		{697A8C41-96E2-451D-A688-772ACF2B53F7} = {5E00EAF2-E1E6-480D-9F15-F5690AA5CB6B}
+		{A0D54321-9EE1-4796-BF75-70F6E871ACDF} = {5E00EAF2-E1E6-480D-9F15-F5690AA5CB6B}
 	EndGlobalSection
 EndGlobal

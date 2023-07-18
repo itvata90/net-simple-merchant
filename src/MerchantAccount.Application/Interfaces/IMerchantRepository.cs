@@ -2,7 +2,7 @@ using MerchantAccount.Domain.Entities;
 
 namespace MerchantAccount.Application.Interfaces;
 
-public interface IMerchantRepository
+public interface IMerchantRepository : IBaseRepository
 {
 	public Task<Merchant?> GetByIdAsync(int id);
 	public Task<Merchant?> GetByOwnerIdAsync(int id);
@@ -10,5 +10,5 @@ public interface IMerchantRepository
 
 	public void Add(Merchant merchant);
 	public void Remove(Merchant merchant);
-	public Task<int> Count();
+	public Task<int> CountAsync();
 }

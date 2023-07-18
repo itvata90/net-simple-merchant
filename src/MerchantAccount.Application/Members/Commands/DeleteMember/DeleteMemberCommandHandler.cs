@@ -8,17 +8,14 @@ namespace MerchantAccount.Application.Members.Commands.DeleteMember;
 
 public class DeleteMemberCommandHandler : IRequestHandler<DeleteMemberCommand>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMemberRepository _memberRepository;
 
 	private readonly IMapper _mapper;
 
 	public DeleteMemberCommandHandler(
-		IApplicationDbContext applicationDbContext,
 		IMemberRepository memberRepository,
 		IMapper mapper)
 	{
-		_applicationDbContext = applicationDbContext;
 		_memberRepository = memberRepository;
 		_mapper = mapper;
 	}
@@ -36,7 +33,8 @@ public class DeleteMemberCommandHandler : IRequestHandler<DeleteMemberCommand>
 		}
 
 		_memberRepository.Remove(entity);
-		_ = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+		await _memberRepository.SaveChangesAsync(cancellationToken);
+
 		return Unit.Value;
 	}
 }

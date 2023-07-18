@@ -6,15 +6,14 @@ namespace MerchantAccount.Application.Members.Commands.CreateMember;
 
 public class CreateMemberCommandValidator : AbstractValidator<CreateMemberCommand>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMemberRepository _memberRepository;
 
-	public CreateMemberCommandValidator(
-		IApplicationDbContext applicationDbContext,
-		IMemberRepository memberRepository)
+	public CreateMemberCommandValidator(IMemberRepository memberRepository)
 	{
-		_applicationDbContext = applicationDbContext;
 		_memberRepository = memberRepository;
+
+		_ = RuleFor(member => member.Username)
+			.NotEmpty();
 
 		_ = RuleFor(member => member.Username)
 			.Must(UserNameMustEnteredAndUnique)
@@ -25,6 +24,6 @@ public class CreateMemberCommandValidator : AbstractValidator<CreateMemberComman
 	{
 		Member? member = _memberRepository.GetByUsername(username);
 
-		return !string.IsNullOrEmpty(username) && member == null;
+		return member == null;
 	}
 }

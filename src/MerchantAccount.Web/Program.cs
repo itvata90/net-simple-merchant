@@ -1,85 +1,59 @@
-using MerchantAccount.Application;
-using MerchantAccount.Application.Interfaces;
-using MerchantAccount.Infrastructure;
-using MerchantAccount.Persistence;
-using MerchantAccount.Web.Middleware;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using MerchantAccount.Application.Interfaces;
+using MerchantAccount.Persistence;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-var MyAllowSpecificOrigins = "_MyAllowSubdomainPolicy";
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<GlobalErrorHandlingMiddleware>();
-builder.Services.AddCors(options =>
+namespace MerchantAccount.Web
 {
-	options.AddPolicy(name: MyAllowSpecificOrigins,
-					  policy =>
-					  {
-						  policy.WithOrigins("http://127.0.0.1:5173")
-						  .WithExposedHeaders("X-Total-Count")
-						  .AllowAnyHeader()
-						  .AllowAnyMethod();
-					  });
-});
-
-builder.WebHost.UseKestrel(options =>
-{
-	options.AddServerHeader = false;
-	options.Limits.MaxConcurrentConnections = 100;
-	options.Limits.MaxConcurrentUpgradedConnections = 100;
-	options.Limits.MaxRequestBodySize = 10485760;  // 10 MB
-	options.Limits.MinRequestBodyDataRate = new MinDataRate(bytesPerSecond: 1024, gracePeriod: TimeSpan.FromSeconds(3));
-	options.Limits.MinResponseDataRate = new MinDataRate(bytesPerSecond: 1024, gracePeriod: TimeSpan.FromSeconds(3));
-	options.Limits.KeepAliveTimeout = TimeSpan.FromSeconds(120);
-	options.Limits.RequestHeadersTimeout = TimeSpan.FromSeconds(60);
-});
-
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
-builder.Services.AddPersistence(builder.Configuration);
-
-
-
-
-WebApplication app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-	_ = app.UseSwagger();
-	_ = app.UseSwaggerUI();
-}
-
-
-using (IServiceScope scope = app.Services.CreateScope())
-{
-	try
+	public class Program
 	{
-		IApplicationDbContext? context = scope.ServiceProvider.GetService<IApplicationDbContext>();
+		public static void Main(string[] args)
+		{
+			var host = CreateWebHostBuilder(args).UseIIS().Build();
 
-		ApplicationDbContext concreteContext = (ApplicationDbContext)context!;
-		concreteContext.Database.Migrate();
-		ApplicationDbInitializer.Initialize(concreteContext);
-	}
-	catch (Exception ex)
-	{
-		ILogger<Program> logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-		logger.LogError(ex, "An error occurred while migrating or initializing the database.");
+			/*
+			 * In PostgreSQL 6.0 has a break change relate to timestamp with error below:
+			 * 'Cannot write DateTime with Kind=Unspecified to PostgreSQL type 'timestamp with time zone', only UTC is supported.
+			 * Note that it's not possible to mix DateTimes with different Kinds in an array/range.'
+			 * To fix this issue we need to set EnableLegacyTimestampBehavior to true.
+			 */
+			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+			using (var scope = host.Services.CreateScope())
+			{
+				try
+				{
+					IApplicationDbContext? context = scope.ServiceProvider.GetService<IApplicationDbContext>();
+
+					ApplicationDbContext concreteContext = (ApplicationDbContext)context!;
+					concreteContext.Database.Migrate();
+
+					ApplicationDbInitializer.Initialize(concreteContext);
+				}
+				catch (Exception ex)
+				{
+					var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+					logger.LogError(ex, "An error occurred while migrating or initializing the database.");
+				}
+			}
+
+			host.Run();
+		}
+
+		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+			WebHost.CreateDefaultBuilder(args)
+				.ConfigureKestrel(serverOptions =>
+				{
+					serverOptions.AddServerHeader = false;
+					serverOptions.Limits.MaxConcurrentConnections = 100;
+					serverOptions.Limits.MaxConcurrentUpgradedConnections = 100;
+					serverOptions.Limits.MaxRequestBodySize = 10485760;  // 10 MB
+					serverOptions.Limits.MinRequestBodyDataRate = new MinDataRate(bytesPerSecond: 1024, gracePeriod: TimeSpan.FromSeconds(3));
+					serverOptions.Limits.MinResponseDataRate = new MinDataRate(bytesPerSecond: 1024, gracePeriod: TimeSpan.FromSeconds(3));
+					serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromSeconds(120);
+					serverOptions.Limits.RequestHeadersTimeout = TimeSpan.FromSeconds(60);
+				})
+				.UseStartup<Startup>();
 	}
 }
-
-// app.UseHttpsRedirection();
-
-app.UseAuthorization();
-app.UseMiddleware<GlobalErrorHandlingMiddleware>();
-app.UseCors(MyAllowSpecificOrigins);
-app.MapControllers();
-
-
-app.Run();

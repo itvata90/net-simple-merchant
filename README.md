@@ -5,24 +5,27 @@ Simple merchant appliction for by .net core, with clean architecture.
 ## Tech
 
 -   dotnet 6
--   clean achitecture
--   MediatR (command/handle)
+-   [clean achitecture](https://medium.com/dotnet-hub/clean-architecture-with-dotnet-and-dotnet-core-aspnetcore-overview-introduction-getting-started-ec922e53bb97)
+-   CQRS, MediatR
 -   FluentValidation (validator), Automapper
 -   EF
--   Reactjs
+-   Reactjs (custom UI controls)
 -   Unit tests: Moq, Xunit, FluentAssertions
+-   Docker, GitHub Actions
 
 ## Installation
 
 ```bash
 $ dotnet restore
+$ ClientApp/ npm install
 ```
 
 ## Running the app
 
 ```bash
 # run
-$ dotnet run
+$ dotnet run             # start .net core app, will proxy to SPA app running at port 4200.
+$ ClientApp/ npm run dev # should start React web app at port 4200
 
 # watch
 $ dotnet watch

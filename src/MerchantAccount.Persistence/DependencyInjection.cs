@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MerchantAccount.Persistence.Repositories;
-using MerchantAccount.Application.Interfaces;
 namespace MerchantAccount.Persistence;
 
 public static class DependencyInjection

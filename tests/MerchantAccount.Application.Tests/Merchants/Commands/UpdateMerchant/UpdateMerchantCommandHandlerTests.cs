@@ -1,85 +1,67 @@
-using AutoMapper;
 using MerchantAccount.Application.Common.Exceptions;
-using MerchantAccount.Application.Interfaces;
 using MerchantAccount.Application.Merchants.Commands.UpdateMerchant;
 using MerchantAccount.Application.Merchants.Models;
-using MerchantAccount.Domain.Entities;
-using MerchantAccount.Domain.Enums;
 using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace MerchantAccount.Application.Tests.Merchants.Commands.UpdateMerchant;
 
-public class UpdateMerchantCommandHandlerTest
+public class UpdateMerchantCommandHandlerTest : TestBaseFixture
 {
-	private readonly IMapper _mapper;
-	private readonly Mock<IApplicationDbContext> _applicationDbContextMock;
-	private readonly Mock<IMerchantRepository> _merchantRepositoryMock;
-
-	public UpdateMerchantCommandHandlerTest()
-	{
-		_mapper = MapperFactory.Create();
-		_applicationDbContextMock = new Mock<IApplicationDbContext>();
-		_merchantRepositoryMock = new Mock<IMerchantRepository>();
-	}
-
 	[Fact]
 	public async void Handle_GivenValidRequest_Should_UpdateMerchant()
 	{
-		int id = 1;
-		Merchant merchant = new()
+		var response = new MerchantDto()
 		{
 			Id = 1,
-			Name = "name",
-			Province = "province",
-			District = "district",
-			Street = "street",
-			Email = "email",
-			Phone = "phone",
-			Status = "status"
+			Name = "name_1_updated",
+			Province = "province_1_updated",
+			District = "district_1_updated",
+			Street = "street_1_updated",
+			Email = "merchant@test_1.com_updated",
+			Phone = "0001",
+			Status = "status_test",
+			OwnerId = 2
 		};
 
-		_ = _merchantRepositoryMock.Setup(x => x.GetByIdAsync(id)).Returns(Task.FromResult(merchant));
+		UpdateMerchantCommand command = new()
+		{
+			Id = 1,
+			Name = "name_1_updated",
+			Province = "province_1_updated",
+			District = "district_1_updated",
+			Street = "street_1_updated",
+			Email = "merchant@test_1.com_updated",
+			Phone = "0001",
+			Status = "status_test",
+			OwnerId = 2
+		};
 
-		UpdateMerchantCommand command = new(
-			1,
-			1,
-			"name1",
-			"province1",
-			"district1",
-			"street1",
-			"email1",
-			"phone1",
-			"status1");
-		UpdateMerchantCommandHandler handler = new(
-			_applicationDbContextMock.Object,
-			_merchantRepositoryMock.Object,
-			_mapper);
+		UpdateMerchantCommandHandler handler = new(MerchantRepository, Mapper);
 
 		MerchantDto result = await handler.Handle(command, CancellationToken.None);
 
-		_ = result.Should().BeEquivalentTo(_mapper.Map<MerchantDto>(merchant));
+		result.Should().BeEquivalentTo(response);
 	}
 
 	[Fact]
 	public async void Handle_GivenInvalidRequestId_ShouldThrowNotFound()
 	{
-		UpdateMerchantCommand command = new(
-			1,
-			1,
-			"name1",
-			"province1",
-			"district1",
-			"street1",
-			"email1",
-			"phone1",
-			MerchantStatus.Active);
-		UpdateMerchantCommandHandler handler = new(
-			_applicationDbContextMock.Object,
-			_merchantRepositoryMock.Object,
-			_mapper);
+		// id = 100 is not existing
+		UpdateMerchantCommand command = new()
+		{
+			Id = 00,
+			Name = "name1",
+			Province = "province1",
+			District = "district1",
+			Street = "street1",
+			Email = "email1",
+			Phone = "phone1",
+			Status = "MerchantStatus.Active",
+			OwnerId = 1
+		};
+		UpdateMerchantCommandHandler handler = new(MerchantRepository, Mapper);
 
-		_ = Assert.ThrowsAsync<NotFoundException>(async () => await handler.Handle(command, CancellationToken.None));
+		await Assert.ThrowsAsync<NotFoundException>(async () => await handler.Handle(command, CancellationToken.None));
 	}
 }

@@ -1,59 +1,56 @@
-using AutoMapper;
-using MerchantAccount.Application.Interfaces;
 using MerchantAccount.Application.Members.Models;
 using MerchantAccount.Application.Members.Queries.GetMembers;
 using MerchantAccount.Domain.Entities;
 using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace MerchantAccount.Application.Tests.Members.Queries;
 
 [Collection("QueryCollection")]
-public class GetMembersQueryHandlerTests
+public class GetMembersQueryHandlerTests : TestBaseFixture
 {
-	private readonly IMapper _mapper;
-
-	private readonly Mock<IMemberRepository> _memberRepositoryMock;
-	private readonly Mock<IApplicationDbContext> _applicationDbContextMock;
-
-	public GetMembersQueryHandlerTests()
-	{
-		_memberRepositoryMock = new();
-		_applicationDbContextMock = new();
-		_mapper = MapperFactory.Create();
-	}
-
 	[Fact]
 	public async Task GetMemberDetail_ShouldReturnAllRecords()
 	{
-		List<Member> members = new()
+		MemberRepository.Add(new Member()
 		{
-			new Member()
-			{
-				Id = 1,
-				Username = "test",
-				FirstName = "first",
-				LastName = "last",
-			},
-			new Member()
-			{
-				Id = 2,
-				Username = "test2",
-				FirstName = "first2",
-				LastName = "last2",
-			}
-		};
+			Username = "existing_user_3",
+			FirstName = "test_3",
+			LastName = "test_3",
+			Id = 3
+		});
 
-		_ = _memberRepositoryMock.Setup(x => x.GetAllAsync(0, 0)).Returns(Task.FromResult(members.AsEnumerable()));
+		MemberRepository.Add(new Member()
+		{
+			Username = "existing_user_4",
+			FirstName = "test_4",
+			LastName = "test_4",
+			Id = 4
+		});
 
-		GetMembersQuery query = new(0, 0);
-		GetMembersQueryHandler handler = new(_applicationDbContextMock.Object, _memberRepositoryMock.Object, _mapper);
+		MemberRepository.Add(new Member()
+		{
+			Username = "existing_user_5",
+			FirstName = "test_5",
+			LastName = "test_5",
+			Id = 5
+		});
 
-		IEnumerable<MemberDto> result = await handler.Handle(query, CancellationToken.None);
+		await MemberRepository.SaveChangesAsync(CancellationToken.None);
 
-		_ = result.ToList()
+		// There're 5 records of Members. 2 when seeding data, 3 created as above for this unit tests
+		GetMembersQueryHandler handler = new(MemberRepository, Mapper);
+
+		IEnumerable<MemberDto> result = await handler.Handle(new GetMembersQuery(2, 2), CancellationToken.None);
+
+		result.ToList()
 			 .Should().NotBeEmpty()
 				 .And.HaveCount(2);
+
+		result = await handler.Handle(new GetMembersQuery(5, 2), CancellationToken.None);
+
+		result.ToList()
+			 .Should().NotBeEmpty()
+				 .And.HaveCount(3);
 	}
 }

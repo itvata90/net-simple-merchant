@@ -1,22 +1,22 @@
-// using AutoMapper;
-// using Xunit;
+using AutoMapper;
+using Xunit;
 
-// namespace DotnetReactCA.Application.Tests.Common.Mapping;
+namespace MerchantAccount.Application.Tests.Common.Mapping;
 
-// public class MappingTests : IClassFixture<MappingFixture>
-// {
-//  private readonly IMapper _mapper;
+public class MappingTests : IClassFixture<MappingFixture>
+{
+	private readonly IMapper _mapper;
 
-// public MappingTests(MappingFixture fixture)
-//  {
-//      _mapper = fixture.Mapper;
-//  }
+	public MappingTests(MappingFixture fixture)
+	{
+		_mapper = fixture.Mapper;
+	}
 
-// [Fact]
-//  public void ShouldHaveValidConfiguration()
-//  {
-//      _mapper
-//          .ConfigurationProvider
-//          .AssertConfigurationIsValid();
-//  }
-// }
+	[Fact]
+	public void ShouldHaveValidConfiguration()
+	{
+		_mapper
+			.ConfigurationProvider
+			.AssertConfigurationIsValid();
+	}
+}

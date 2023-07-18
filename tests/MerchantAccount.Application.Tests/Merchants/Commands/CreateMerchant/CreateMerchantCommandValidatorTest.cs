@@ -1,21 +1,26 @@
-// using MerchantAccount.Application.Interface
-// using DotnetReactCA.Application.Merchants.Commands.CreateMerchant;
-// using FluentValidation.TestHelper;
-// using Moq;
-// using Xunit;
+using MerchantAccount.Application.Merchants.Commands.CreateMerchant;
+using FluentValidation.TestHelper;
+using Xunit;
 
-// namespace DotnetReactCA.Application.Tests.Merchants.Commands.CreateMerchant;
+namespace MerchantAccount.Application.Tests.Merchants.Commands.CreateMerchant;
 
-// public class CreateMerchantCommandValidatorTest
-// {
-// 	private readonly CreateMerchantCommandValidator _validator;
-// 	private readonly Mock<IApplicationDbContext> _contextMock;
-// 	private readonly Mock<IMerchantRepository> _merchantRepositoryMock;
+public class CreateMerchantCommandValidatorTest : TestBaseFixture
+{
+	private readonly CreateMerchantCommandValidator _validator;
 
-// 	public CreateMerchantCommandValidatorTest()
-// 	{
-// 		_contextMock = new();
-// 		_merchantRepositoryMock = new();
-// 		_validator = new(_contextMock.Object, _merchantRepositoryMock.Object);
-// 	}
-// }
+	public CreateMerchantCommandValidatorTest()
+	{
+		_validator = new CreateMerchantCommandValidator(MemberRepository, MerchantRepository);
+	}
+
+	[Fact]
+	public async void ShouldHaveValidationErrorForUsername()
+	{
+		// not existing ownerid = 1000
+		CreateMerchantCommand command = new() { OwnerId = 1000 };
+		TestValidationResult<CreateMerchantCommand> result = await _validator.TestValidateAsync(command);
+
+		_ = result.ShouldHaveValidationErrorFor(_ => _.OwnerId)
+				 .WithErrorMessage("Owner Must Be Exist.");
+	}
+}

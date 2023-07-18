@@ -9,13 +9,11 @@ namespace MerchantAccount.Application.Members.Queries.GetMemberById;
 
 public class GetMemberByIdQueryHandler : IRequestHandler<GetMemberByIdQuery, MemberDto>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMemberRepository _memberRepository;
 	private readonly IMapper _mapper;
 
-	public GetMemberByIdQueryHandler(IApplicationDbContext applicationDbContext, IMemberRepository memberRepository, IMapper mapper)
+	public GetMemberByIdQueryHandler(IMemberRepository memberRepository, IMapper mapper)
 	{
-		_applicationDbContext = applicationDbContext;
 		_memberRepository = memberRepository;
 		_mapper = mapper;
 	}

@@ -1,35 +1,27 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using MerchantAccount.Application.Interfaces;
-using MerchantAccount.Application.Common.Exceptions;
-using MerchantAccount.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using MerchantAccount.Application.Interfaces;
+using MerchantAccount.Domain.Entities;
 
 namespace MerchantAccount.Persistence.Repositories;
 
-public sealed class MemberDetailRepository : IMemberDetailRepository
+public sealed class MemberDetailRepository : BaseRepository, IMemberDetailRepository
 {
-	private readonly ApplicationDbContext _context;
-
-	public MemberDetailRepository(IApplicationDbContext context)
+	public MemberDetailRepository(IApplicationDbContext context) : base(context)
 	{
-		_context = (ApplicationDbContext)context;
 	}
-
 	public async Task<MemberDetail?> GetByIdAsync(int id)
 	{
-		return await _context.MemberDetails.FindAsync(id);
+		return await Context.MemberDetails.FindAsync(id);
 	}
 
 	public async Task<MemberDetail?> GetByMemberIdAsync(int memberId)
 	{
-		return await _context.MemberDetails.FirstOrDefaultAsync(_ => _.MemberId == memberId);
+		return await Context.MemberDetails.FirstOrDefaultAsync(_ => _.MemberId == memberId);
 	}
 
 	public async Task<IEnumerable<MemberDetail>> GetAllAsync(int pageLimit, int pageOffset)
 	{
-		return await _context.MemberDetails
+		return await Context.MemberDetails
 			.OrderBy(_ => _.Id)
 			.Skip(pageOffset)
 			.Take(pageLimit == 0 ? 5 : pageLimit)
@@ -38,11 +30,11 @@ public sealed class MemberDetailRepository : IMemberDetailRepository
 
 	public void Add(MemberDetail entity)
 	{
-		_context.MemberDetails.Add(entity);
+		Context.MemberDetails.Add(entity);
 	}
 
 	public void Remove(MemberDetail entity)
 	{
-		_context.MemberDetails.Remove(entity);
+		Context.MemberDetails.Remove(entity);
 	}
 }

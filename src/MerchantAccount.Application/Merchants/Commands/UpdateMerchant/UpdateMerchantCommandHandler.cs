@@ -8,13 +8,11 @@ namespace MerchantAccount.Application.Merchants.Commands.UpdateMerchant;
 
 public class UpdateMerchantCommandHandler : IRequestHandler<UpdateMerchantCommand, MerchantDto>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMerchantRepository _merchantRepository;
 	private readonly IMapper _mapper;
 
-	public UpdateMerchantCommandHandler(IApplicationDbContext applicationDbContext, IMerchantRepository merchantRepository, IMapper mapper)
+	public UpdateMerchantCommandHandler(IMerchantRepository merchantRepository, IMapper mapper)
 	{
-		_applicationDbContext = applicationDbContext;
 		_merchantRepository = merchantRepository;
 		_mapper = mapper;
 	}
@@ -38,7 +36,7 @@ public class UpdateMerchantCommandHandler : IRequestHandler<UpdateMerchantComman
 		entity.Status = request.Status;
 		entity.OwnerId = request.OwnerId;
 
-		_ = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+		_ = await _merchantRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<MerchantDto>(entity);
 	}

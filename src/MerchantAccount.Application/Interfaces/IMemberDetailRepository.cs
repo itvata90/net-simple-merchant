@@ -2,7 +2,7 @@ using MerchantAccount.Domain.Entities;
 
 namespace MerchantAccount.Application.Interfaces;
 
-public interface IMemberDetailRepository
+public interface IMemberDetailRepository : IBaseRepository
 {
 	public Task<MemberDetail?> GetByIdAsync(int id);
 	public Task<MemberDetail?> GetByMemberIdAsync(int id);

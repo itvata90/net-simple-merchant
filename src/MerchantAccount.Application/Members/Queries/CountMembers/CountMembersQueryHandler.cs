@@ -17,6 +17,6 @@ public class CountMembersQueryHandler : IRequestHandler<CountMembersQuery, int>
 
 	public async Task<int> Handle(CountMembersQuery request, CancellationToken cancellationToken)
 	{
-		return await _memberRepository.Count();
+		return await _memberRepository.CountAsync();
 	}
 }

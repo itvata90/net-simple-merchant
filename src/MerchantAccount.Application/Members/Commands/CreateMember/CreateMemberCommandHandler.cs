@@ -8,13 +8,11 @@ namespace MerchantAccount.Application.Members.Commands.CreateMember;
 
 public class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, MemberDto>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMemberRepository _memberRepository;
 	private readonly IMapper _mapper;
 
-	public CreateMemberCommandHandler(IApplicationDbContext applicationDbContext, IMemberRepository memberRepository, IMapper mapper)
+	public CreateMemberCommandHandler(IMemberRepository memberRepository, IMapper mapper)
 	{
-		_applicationDbContext = applicationDbContext;
 		_memberRepository = memberRepository;
 		_mapper = mapper;
 	}
@@ -30,7 +28,7 @@ public class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, M
 
 		_memberRepository.Add(entity);
 
-		_ = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+		await _memberRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<MemberDto>(entity);
 	}

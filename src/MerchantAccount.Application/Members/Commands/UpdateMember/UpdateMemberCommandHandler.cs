@@ -9,13 +9,11 @@ namespace MerchantAccount.Application.Members.Commands.UpdateMember;
 
 public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, MemberDto>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMemberRepository _memberRepository;
 	private readonly IMapper _mapper;
 
-	public UpdateMemberCommandHandler(IApplicationDbContext applicationDbContext, IMemberRepository memberRepository, IMapper mapper)
+	public UpdateMemberCommandHandler(IMemberRepository memberRepository, IMapper mapper)
 	{
-		_applicationDbContext = applicationDbContext;
 		_memberRepository = memberRepository;
 		_mapper = mapper;
 	}
@@ -34,7 +32,7 @@ public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, M
 		entity.FirstName = request.FirstName;
 		entity.LastName = request.LastName;
 
-		_ = await _applicationDbContext.SaveChangesAsync(cancellationToken);
+		await _memberRepository.SaveChangesAsync(cancellationToken);
 
 		return _mapper.Map<MemberDto>(entity);
 	}

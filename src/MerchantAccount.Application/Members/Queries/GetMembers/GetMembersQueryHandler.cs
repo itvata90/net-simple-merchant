@@ -7,13 +7,11 @@ namespace MerchantAccount.Application.Members.Queries.GetMembers;
 
 public class GetMembersQueryHandler : IRequestHandler<GetMembersQuery, IEnumerable<MemberDto>>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMemberRepository _memberRepository;
 	private readonly IMapper _mapper;
 
-	public GetMembersQueryHandler(IApplicationDbContext applicationDbContext, IMemberRepository memberRepository, IMapper mapper)
+	public GetMembersQueryHandler(IMemberRepository memberRepository, IMapper mapper)
 	{
-		_applicationDbContext = applicationDbContext;
 		_memberRepository = memberRepository;
 		_mapper = mapper;
 	}

@@ -7,16 +7,13 @@ namespace MerchantAccount.Application.Merchants.Queries.GetMerchants;
 
 public class GetMerchantsQueryHandler : IRequestHandler<GetMerchantsQuery, IEnumerable<MerchantDto>>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMerchantRepository _merchantRepository;
 	private readonly IMapper _mapper;
 
 	public GetMerchantsQueryHandler(
-		IApplicationDbContext applicationDbContext,
 		IMerchantRepository merchantRepository,
 		IMapper mapper)
 	{
-		_applicationDbContext = applicationDbContext;
 		_merchantRepository = merchantRepository;
 		_mapper = mapper;
 	}

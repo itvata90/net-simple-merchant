@@ -1,51 +1,38 @@
-using AutoMapper;
-using MerchantAccount.Application.Interfaces;
 using MerchantAccount.Application.Members.Commands.CreateMember;
 using MerchantAccount.Application.Members.Models;
 using FluentAssertions;
 using FluentValidation.Results;
-using Moq;
 using Xunit;
 
 namespace MerchantAccount.Application.Tests.Members.Commands.CreateMember;
 
-public class CreateMemberCommandHandlerTest
+public class CreateMemberCommandHandlerTest : TestBaseFixture
 {
-	private readonly Mock<IMemberRepository> _memberRepositoryMock;
-	private readonly IMapper _mapper;
-	private readonly Mock<IApplicationDbContext> _applicationDbContextMock;
-
-	public CreateMemberCommandHandlerTest()
-	{
-		_memberRepositoryMock = new();
-		_mapper = MapperFactory.Create();
-		_applicationDbContextMock = new();
-	}
-
 	[Fact]
 	public async void Handle_GivenValidRequest_ShouldCreateMember()
 	{
-		CreateMemberCommandHandler handler = new(
-			_applicationDbContextMock.Object,
-			_memberRepositoryMock.Object,
-			_mapper);
-		CreateMemberCommand command = new(
-			"username",
-			"first",
-			"last");
+		var sut = new CreateMemberCommandHandler(MemberRepository, Mapper);
 
-		MemberDto result = await handler.Handle(command, CancellationToken.None);
+		var response = new MemberDto()
+		{
+			Id = 3, // existing is 2 already
+			FirstName = "FirstName",
+			LastName = "LastName",
+			Username = "UserName"
+		};
 
-		_ = result.Should().BeOfType(typeof(MemberDto));
+		var result = await sut.Handle(new CreateMemberCommand() { Username = response.Username, FirstName = response.FirstName, LastName = response.LastName }, CancellationToken.None);
+
+		result.Should().BeEquivalentTo(response);
 	}
 
 	[Fact]
 	public async void Handle_GivenInvalidRequest_ShouldReturnErrorMessage()
 	{
-		CreateMemberCommandValidator validator = new(_applicationDbContextMock.Object, _memberRepositoryMock.Object);
+		var validator = new CreateMemberCommandValidator(MemberRepository);
 
-		ValidationResult validatorResult = await validator.ValidateAsync(new CreateMemberCommand(null, "first", "last"));
+		ValidationResult validatorResult = await validator.ValidateAsync(new CreateMemberCommand() { Username = string.Empty, FirstName = "first", LastName = "last" });
 
-		_ = validatorResult.Errors.FirstOrDefault().ErrorMessage.Should().NotBeNull();
+		validatorResult.Errors.FirstOrDefault().ErrorMessage.Should().Be("'Username' must not be empty.");
 	}
 }

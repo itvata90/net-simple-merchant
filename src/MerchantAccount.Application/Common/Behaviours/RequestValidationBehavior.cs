@@ -16,7 +16,7 @@ where TRequest : IRequest<TResponse>
 
 	public Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
-		ValidationContext<TRequest> context = new(request);
+		ValidationContext<TRequest> context = new ValidationContext<TRequest>(request);
 
 		List<FluentValidation.Results.ValidationFailure> failures = _validators
 			.Select(v => v.Validate(context))

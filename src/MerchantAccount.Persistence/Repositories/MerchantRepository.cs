@@ -1,35 +1,27 @@
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using MerchantAccount.Application.Interfaces;
-using MerchantAccount.Application.Common.Exceptions;
-using MerchantAccount.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using MerchantAccount.Application.Interfaces;
+using MerchantAccount.Domain.Entities;
 
 namespace MerchantAccount.Persistence.Repositories;
 
-public sealed class MerchantRepository : IMerchantRepository
+public sealed class MerchantRepository : BaseRepository, IMerchantRepository
 {
-	private readonly ApplicationDbContext _context;
-
-	public MerchantRepository(IApplicationDbContext context)
+	public MerchantRepository(IApplicationDbContext context) : base(context)
 	{
-		_context = (ApplicationDbContext)context;
 	}
 
 	public async Task<Merchant?> GetByIdAsync(int id)
 	{
-		return await _context.Merchants.FindAsync(id);
+		return await Context.Merchants.FindAsync(id);
 	}
 	public async Task<Merchant?> GetByOwnerIdAsync(int ownerId)
 	{
-		return await _context.Merchants.FirstOrDefaultAsync(_ => _.OwnerId == ownerId);
+		return await Context.Merchants.FirstOrDefaultAsync(_ => _.OwnerId == ownerId);
 	}
 
 	public async Task<IEnumerable<Merchant>> GetAllAsync(int pageLimit, int pageOffset)
 	{
-		return await _context.Merchants
+		return await Context.Merchants
 			.OrderBy(_ => _.Id)
 			.Skip(pageOffset)
 			.Take(pageLimit == 0 ? 5 : pageLimit)
@@ -38,15 +30,15 @@ public sealed class MerchantRepository : IMerchantRepository
 
 	public void Add(Merchant entity)
 	{
-		_context.Merchants.Add(entity);
+		Context.Merchants.Add(entity);
 	}
 
 	public void Remove(Merchant entity)
 	{
-		_context.Merchants.Remove(entity);
+		Context.Merchants.Remove(entity);
 	}
-	public async Task<int> Count()
+	public async Task<int> CountAsync()
 	{
-		return _context.Merchants.Count();
+		return await Context.Merchants.CountAsync();
 	}
 }

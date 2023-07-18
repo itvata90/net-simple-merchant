@@ -6,24 +6,23 @@ namespace MerchantAccount.Application.Merchants.Commands.CreateMerchant;
 
 public class CreateMerchantCommandValidator : AbstractValidator<CreateMerchantCommand>
 {
-	private readonly IApplicationDbContext _applicationDbContext;
 	private readonly IMemberRepository _memberRepository;
 	private readonly IMerchantRepository _merchantRepository;
 
 	public CreateMerchantCommandValidator(
-		IApplicationDbContext applicationDbContext,
 		IMemberRepository memberRepository,
 		IMerchantRepository merchantRepository)
 	{
-		_applicationDbContext = applicationDbContext;
 		_memberRepository = memberRepository;
 		_merchantRepository = merchantRepository;
 
-		// _ = RuleFor(_ => _.OwnerId)
-		//  .Must(await OwnerMustBeExist)
-		//  .WithMessage("Owner Must Be Exist.")
-		//  .Must(await OwnerMustNotHasAlreadyMerchant)
-		//  .WithMessage("Owner Must Not Has Any Already Merchant.");
+		_ = RuleFor(_ => _.OwnerId)
+			.MustAsync((x, CancellationToken) => OwnerMustBeExist(x))
+			.WithMessage("Owner Must Be Exist.");
+
+		_ = RuleFor(_ => _.OwnerId)
+			.MustAsync((x, CancellationToken) => OwnerMustNotHasAlreadyMerchant(x))
+			.WithMessage("Owner Must Not Has Any Already Merchant.");
 	}
 
 	private async Task<bool> OwnerMustBeExist(int ownerId)

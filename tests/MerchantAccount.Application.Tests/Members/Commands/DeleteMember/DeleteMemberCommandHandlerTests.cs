@@ -1,50 +1,35 @@
-using AutoMapper;
-using MerchantAccount.Application.Interfaces;
 using MerchantAccount.Application.Members.Commands.DeleteMember;
 using MerchantAccount.Domain.Entities;
-using Moq;
 using Xunit;
 
 namespace MerchantAccount.Application.Tests.Members.Commands.DeleteMember;
 
-public class DeleteMemberCommandHandlerTest
+public class DeleteMemberCommandHandlerTest : TestBaseFixture
 {
-	private readonly Mock<IMemberRepository> _memberRepositoryMock;
-	private readonly IMapper _mapper;
-	private readonly Mock<IApplicationDbContext> _applicationDbContextMock;
-
-	public DeleteMemberCommandHandlerTest()
-	{
-		_memberRepositoryMock = new();
-		_mapper = MapperFactory.Create();
-		_applicationDbContextMock = new();
-	}
-
 	[Fact]
 	public async void Handle_GivenValidRequest_ShouldDeleteMember()
 	{
-		// Arrange
-		int id = 1;
 		Member member = new()
 		{
-			Id = 1,
+			Id = 100,
 			Username = "test",
 			FirstName = "test",
 			LastName = "test",
 		};
 
-		_ = _memberRepositoryMock.Setup(x => x.GetById(id)).Returns(member);
-		_ = _memberRepositoryMock.Setup(x => x.GetByIdAsync(id)).Returns(Task.FromResult(member));
-		DeleteMemberCommandHandler handler = new(
-			_applicationDbContextMock.Object,
-			_memberRepositoryMock.Object,
-			_mapper);
-		DeleteMemberCommand command = new(1);
+		MemberRepository.Add(member);
+		await MemberRepository.SaveChangesAsync(CancellationToken.None);
 
-		// Act
-		_ = await handler.Handle(command, CancellationToken.None);
+		// Should be added to DB
+		var memberResult = await MemberRepository.GetByIdAsync(100);
+		Assert.NotNull(memberResult);
 
-		// Assert
-		_memberRepositoryMock.Verify(x => x.Remove(It.Is<Member>(member => member.Id == id)), Times.Once());
+		DeleteMemberCommandHandler handler = new(MemberRepository, Mapper);
+
+		await handler.Handle(new DeleteMemberCommand(100), CancellationToken.None);
+
+		// should be deleted
+		memberResult = await MemberRepository.GetByIdAsync(100);
+		Assert.Null(memberResult);
 	}
 }
