@@ -1,6 +1,9 @@
 import classNames from 'classnames';
-import { forwardRef } from 'react';
-import { FeedbackType, FormControlBaseProps } from 'src/core/interfaces/components';
+import { forwardRef, useEffect, useRef, useState, memo } from 'react';
+import {
+  FeedbackType,
+  FormControlBaseProps,
+} from 'src/core/interfaces/components';
 
 interface FormControlProps extends Partial<FormControlBaseProps> {
   feedbackType?: FeedbackType;
@@ -10,23 +13,42 @@ interface FormControlProps extends Partial<FormControlBaseProps> {
  * Control component
  *
  */
-const FormControl = forwardRef(
-  ({ type, size, variant, className, feedbackType, as: Component = 'input', ...otherProps }: FormControlProps, ref) => {
-    let bsPrefix = 'form-control';
+const FormControl = memo(
+  forwardRef(
+    (
+      {
+        type,
+        size,
+        variant,
+        className,
+        feedbackType,
+        as: Component = 'input',
+        onInput,
+        defaultValue,
+        ...otherProps
+      }: FormControlProps,
+      ref
+    ) => {
+      let bsPrefix = 'form-control';
 
-    return (
-      <Component
-        {...otherProps}
-        ref={ref as any}
-        className={classNames(
-          variant !== 'plaintext' && bsPrefix,
-          variant === 'plaintext' ? `${bsPrefix}-${'plaintext'}` : size && `${bsPrefix}-${size}`,
-          feedbackType,
-          className,
-        )}
-        type={type}
-      />
-    );
-  },
+      return (
+        <Component
+          {...otherProps}
+          ref={ref as any}
+          className={classNames(
+            variant !== 'plaintext' && bsPrefix,
+            variant === 'plaintext'
+              ? `${bsPrefix}-${'plaintext'}`
+              : size && `${bsPrefix}-${size}`,
+            feedbackType,
+            className
+          )}
+          defaultValue={defaultValue}
+          onInput={onInput}
+          type={type}
+        />
+      );
+    }
+  )
 );
 export default FormControl;

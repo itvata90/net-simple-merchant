@@ -8,11 +8,24 @@ export interface FormGroupProps extends Partial<FormGroupBaseProps> {}
  * FormGroup component
  *
  */
-const FormGroup = forwardRef(({ size, className, as: Component = 'div', ...otherProps }: FormGroupProps, ref) => {
-  let bsPrefix = 'form-group';
-  return (
-    <Component {...otherProps} ref={ref} className={classNames(bsPrefix, size && `${bsPrefix}-${size}`, className)} />
-  );
-});
+const FormGroup = forwardRef(
+  (
+    { size, className, as: Component = 'div', ...otherProps }: FormGroupProps,
+    ref
+  ) => {
+    let bsPrefix = 'form-group';
+    return (
+      <Component
+        {...otherProps}
+        ref={ref}
+        className={classNames(
+          bsPrefix,
+          size && `${bsPrefix}-${size}`,
+          className
+        )}
+      />
+    );
+  }
+);
 
 export default FormGroup;

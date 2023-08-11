@@ -1,6 +1,10 @@
 import { forwardRef, ReactNode } from 'react';
 import classNames from 'classnames';
-import { BadgeBaseProps, Color, Placement } from 'src/core/interfaces/components';
+import {
+  BadgeBaseProps,
+  Color,
+  Placement,
+} from 'src/core/interfaces/components';
 
 export interface BadgeProps extends Partial<BadgeBaseProps> {
   placement?: Placement;
@@ -24,7 +28,7 @@ const Badge = forwardRef(
       value,
       ...otherProps
     }: BadgeProps,
-    ref,
+    ref
   ) => {
     let bsPrefix = `badge`;
 
@@ -53,13 +57,13 @@ const Badge = forwardRef(
                 placementCases[placement.vertical || 'top'] +
                   ' translate-middle ' +
                   placementCases[placement.horizontal || 'right'],
-              className,
+              className
             )}
           />
         )}
       </>
     );
-  },
+  }
 );
 
 export default Object.assign(Badge);

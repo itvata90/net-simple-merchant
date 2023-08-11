@@ -22,7 +22,7 @@ describe('Bootstrap List Nested', () => {
     render(
       <List data-testid="nested-test">
         <List.Nested items={listNested} />
-      </List>,
+      </List>
     );
     const element = screen.getByTestId('nested-test');
     const nested = element.firstChild;

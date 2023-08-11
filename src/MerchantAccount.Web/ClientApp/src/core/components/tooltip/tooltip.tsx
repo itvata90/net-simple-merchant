@@ -1,6 +1,11 @@
 import classNames from 'classnames';
 import { forwardRef, ReactNode, useEffect, useRef, cloneElement } from 'react';
-import { AsProp, Color, CommonProps, Placement } from 'src/core/interfaces/components';
+import {
+  AsProp,
+  Color,
+  CommonProps,
+  Placement,
+} from 'src/core/interfaces/components';
 import { Tooltip as BsTooltip } from 'bootstrap';
 
 export interface TooltipProps extends Partial<CommonProps & AsProp> {
@@ -9,7 +14,14 @@ export interface TooltipProps extends Partial<CommonProps & AsProp> {
   delay?: number;
   open?: boolean;
   onClose?: Function;
-  placement?: 'auto' | 'top' | 'bottom' | 'left' | 'right' | (() => void) | undefined;
+  placement?:
+    | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | (() => any)
+    | undefined;
   children?: ReactNode;
   offset?: string;
   trigger?:
@@ -24,7 +36,12 @@ export interface TooltipProps extends Partial<CommonProps & AsProp> {
     | undefined;
   boundary?: any;
   container?: string | false | Element | undefined;
-  text?: string | Element | JQuery | ((this: HTMLElement) => string | Element | JQuery) | undefined;
+  text?:
+    | string
+    | Element
+    | JQuery
+    | ((this: HTMLElement) => string | Element | JQuery)
+    | undefined;
 }
 
 /**
@@ -50,7 +67,7 @@ const Tooltip = forwardRef(
       text,
       ...otherProps
     }: TooltipProps,
-    ref,
+    ref
   ) => {
     const childRef = useRef(undefined as unknown as Element);
     useEffect(() => {
@@ -69,10 +86,21 @@ const Tooltip = forwardRef(
       });
       open && bsTooltip.show();
       return () => bsTooltip.dispose();
-    }, [animation, boundary, className, container, delay, offset, open, placement, text, trigger]);
+    }, [
+      animation,
+      boundary,
+      className,
+      container,
+      delay,
+      offset,
+      open,
+      placement,
+      text,
+      trigger,
+    ]);
 
     return cloneElement(children as JSX.Element, { ref: childRef });
-  },
+  }
 );
 
 export default Tooltip;

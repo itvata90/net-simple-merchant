@@ -6,7 +6,7 @@ describe('Bootstrap Button', () => {
     render(
       <Button color="primary" data-testid="button-test">
         Primary
-      </Button>,
+      </Button>
     );
     const element = screen.getByTestId('button-test');
     expect(element).toBeInTheDocument();

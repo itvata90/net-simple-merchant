@@ -1,7 +1,13 @@
 import classNames from 'classnames';
 import { Children, cloneElement, forwardRef, isValidElement } from 'react';
-import { createBreakpointsClassName } from 'src/core/functions/create_breakpoints_class_name';
-import { AlignOptions, Breakpoints, Either, GridBaseProps, JustifyOptions } from 'src/core/interfaces/components';
+import { createBreakpointsClassName } from 'src/core/functions/create-breakpoints-class-name';
+import {
+  AlignOptions,
+  Breakpoints,
+  Either,
+  GridBaseProps,
+  JustifyOptions,
+} from 'src/core/interfaces/components';
 
 interface RowProps {
   row: boolean;
@@ -56,7 +62,7 @@ const Grid = forwardRef(
       columnSpacing,
       ...otherProps
     }: Partial<GridProps>,
-    ref,
+    ref
   ) => {
     let bsPrefix = column ? 'col' : 'row';
     const childrenWithCustomProps = Children.map(children, (child) => {
@@ -85,17 +91,29 @@ const Grid = forwardRef(
       xl,
       xxl,
     });
-    let justifyContentClassName = createBreakpointsClassName('justify-content', justifyContent);
+    let justifyContentClassName = createBreakpointsClassName(
+      'justify-content',
+      justifyContent
+    );
 
-    let alignItemsClassName = createBreakpointsClassName('align-items', alignItems);
+    let alignItemsClassName = createBreakpointsClassName(
+      'align-items',
+      alignItems
+    );
 
-    let alignSelfClassName = createBreakpointsClassName('align-self', alignSelf);
+    let alignSelfClassName = createBreakpointsClassName(
+      'align-self',
+      alignSelf
+    );
 
     let orderClassName = createBreakpointsClassName('order', order);
     let offsetClassName = createBreakpointsClassName('offset', offset);
     let spacingClassName = createBreakpointsClassName('g', spacing);
     let rowSpacingClassName = createBreakpointsClassName('gx', rowSpacing);
-    let columnSpacingClassName = createBreakpointsClassName('gy', columnSpacing);
+    let columnSpacingClassName = createBreakpointsClassName(
+      'gy',
+      columnSpacing
+    );
 
     return (
       <Component
@@ -112,12 +130,12 @@ const Grid = forwardRef(
           spacing && spacingClassName,
           rowSpacing && rowSpacingClassName,
           columnSpacing && columnSpacingClassName,
-          className,
+          className
         )}
         children={childrenWithCustomProps}
       />
     );
-  },
+  }
 );
 
 export default Grid;

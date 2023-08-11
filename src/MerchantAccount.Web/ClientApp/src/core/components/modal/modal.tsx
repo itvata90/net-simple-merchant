@@ -86,7 +86,12 @@ const Modal = ({
         onClick={handleClickOutSide}
         {...otherProps}
         ref={modalRef}
-        className={classNames(bsPrefix, animation && animationClassName, className, open && 'show')}
+        className={classNames(
+          bsPrefix,
+          animation && animationClassName,
+          className,
+          open && 'show'
+        )}
       >
         <div
           className={classNames(
@@ -98,10 +103,13 @@ const Modal = ({
               (typeof fullscreen === 'boolean'
                 ? `${bsPrefix}-fullscreen`
                 : `${bsPrefix}-fullscreen-${fullscreen}-down`),
-            dialogClassName,
+            dialogClassName
           )}
         >
-          <div onClick={(e) => e.stopPropagation()} className={classNames(bsPrefixContent, contentClassName)}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={classNames(bsPrefixContent, contentClassName)}
+          >
             {children}
           </div>
         </div>

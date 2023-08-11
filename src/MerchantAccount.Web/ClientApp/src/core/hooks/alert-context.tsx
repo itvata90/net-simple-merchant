@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 
 export const enum STATES {
   SUCCESS = 'success',
-  ERROR = 'error',
+  ERROR = 'danger',
 }
 
 interface ContextProps {

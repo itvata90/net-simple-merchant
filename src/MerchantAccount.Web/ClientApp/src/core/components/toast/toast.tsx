@@ -1,6 +1,11 @@
 import classNames from 'classnames';
 import { forwardRef, ReactNode, useEffect, useRef } from 'react';
-import { AsProp, Color, CommonProps, Placement } from 'src/core/interfaces/components';
+import {
+  AsProp,
+  Color,
+  CommonProps,
+  Placement,
+} from 'src/core/interfaces/components';
 import { Toast as BsToast } from 'bootstrap';
 import ToastBody from 'src/core/components/toast-body/toast-body';
 import ToastHeader from 'src/core/components/toast-header/toast-header';
@@ -36,7 +41,7 @@ const Toast = forwardRef(
       as: Component = 'div',
       ...otherProps
     }: ToastProps,
-    ref,
+    ref
   ) => {
     let bsPrefix = 'toast';
     let bsPrefixContainer = 'toast-container';
@@ -70,19 +75,26 @@ const Toast = forwardRef(
       <Component
         className={classNames(
           bsPrefixContainer,
-          placement && placementCases[placement.vertical] + ' ' + placementCases[placement.horizontal],
-          containerClassName,
+          placement &&
+            placementCases[placement.vertical] +
+              ' ' +
+              placementCases[placement.horizontal],
+          containerClassName
         )}
         ref={ref}
       >
         <Component
           {...otherProps}
           ref={toastRef}
-          className={classNames(bsPrefix, color && `text-bg-${color}`, className)}
+          className={classNames(
+            bsPrefix,
+            color && `text-bg-${color}`,
+            className
+          )}
         />
       </Component>
     );
-  },
+  }
 );
 
 export default Object.assign(Toast, { Body: ToastBody, Header: ToastHeader });

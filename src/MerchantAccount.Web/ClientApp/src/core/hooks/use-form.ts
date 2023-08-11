@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useId } from 'react';
 import { debounce } from 'src/core/functions/debounce';
 import { deepEquals } from 'src/core/functions/deep-equals';
 import { defaultValidator } from 'src/core/hooks/default-validator';
@@ -11,8 +11,10 @@ export interface UseFormReturnType<DataType> {
   errors: { [key: string]: ValidationError };
   setErrors: (newData: { [x: string]: ValidationError }) => void;
   resetForm: () => void;
-  handleSubmit: (submitCallback: SubmitCallback<DataType>) => (event: React.FormEvent<HTMLFormElement>) => void;
-  fieldProps: (fieldName: string, _validation: Validation) => FieldProps;
+  handleSubmit: (
+    submitCallback: SubmitCallback<DataType>
+  ) => (event: React.FormEvent<HTMLFormElement>) => void;
+  fieldProps: (fieldName: string, _validation?: Validation) => FieldProps;
   watch: () => DataType;
   isDirty: () => boolean;
 }
@@ -37,6 +39,7 @@ interface FieldProps {
   key?: any;
   ref?: any;
   defaultValue?: any;
+  defaultChecked?: boolean;
   onKeyUpCapture?: any;
 }
 
@@ -45,7 +48,7 @@ interface UseFormParameter<DataType> {
 
   validator?: (
     values: { [x: string]: any },
-    validation?: { [x: string]: any },
+    validation?: { [x: string]: any }
   ) => {
     [x: string]: string;
   };
@@ -57,7 +60,7 @@ interface UseFormParameter<DataType> {
 type SubmitCallback<DataType> = (
   values?: DataType,
   errors?: { [key: string]: ValidationError },
-  setErrors?: (newData: { [x: string]: ValidationError }) => void,
+  setErrors?: (newData: { [x: string]: ValidationError }) => void
 ) => void;
 
 /**
@@ -75,6 +78,7 @@ const useForm = <DataType extends { [x: string]: any }>({
   validateFields,
   validationDebounceTime = 200,
 }: UseFormParameter<DataType>): UseFormReturnType<DataType> => {
+  // Context:
   const {
     errors: contextErrors,
     setErrors: setErrorsContext,
@@ -87,69 +91,82 @@ const useForm = <DataType extends { [x: string]: any }>({
     refs,
     setRefs,
   } = useFormContext();
+  const isContextEnabled = !!setInitValuesContext;
+
+  // Hook state
   const submitCallback = useRef<SubmitCallback<DataType>>();
   const [errors, setErrors] = useState<{ [x: string]: ValidationError }>({});
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [watchers, setWatchers] = useState<DataType>(initialValues);
-  const [key, setKey] = useState(1);
-  const validation: { [key: string]: Validation } = {};
-  let values = useRef(initialValues);
-  // Get, Set values
+  // Set key for each form control, key change can trigger rerender
+  // const [key, setKey] = useState<number>(1);
+  const validation = useRef<{ [key: string]: Validation }>({});
+  const formRef = useRef<any>();
+  // Values store value in ref
+  const values = useRef(initialValues);
+
+  // Set values to ref, not trigger rerender
   const setValues = (newValues: DataType) => {
     values.current = newValues;
   };
 
+  // Set values to context and ref, combine current, context, and new data
   const handleSetValues = (newData: DataType) => {
     setValues({ ...contextValues, ...values.current, ...newData });
   };
 
+  // Get values from context or internal
   const handleGetValues = (): DataType => {
-    return (setValuesContext ? contextValues : values.current) as DataType;
+    return (isContextEnabled ? contextValues : values.current) as DataType;
   };
 
-  // Get validation
+  // Get validation from context or internal
   const handleGetValidation = () => {
-    return setValidationContext ? contextValidation : validation;
+    return isContextEnabled ? contextValidation : validation.current;
   };
 
-  // Get init values
-  const handleGetInitialValues = () => {
-    return (setInitValuesContext ? contextInitValues : initialValues) as DataType;
+  // Get initial values from context or internal
+  const handleGetInitialValues = (): DataType => {
+    return (isContextEnabled ? contextInitValues : initialValues) as DataType;
   };
 
-  const handleSetInitialValues = (values: DataType) => {
-    setInitValuesContext && setInitValuesContext(values);
-  };
-
-  // Get, set errors
+  // Set error to context or internal
   const handleSetErrors = (newData: { [key: string]: ValidationError }) => {
-    setErrorsContext ? setErrorsContext(newData) : setErrors((prev) => ({ ...prev, ...newData }));
+    isContextEnabled
+      ? setErrorsContext?.(newData)
+      : setErrors((prev) => ({ ...prev, ...newData }));
   };
 
+  // Get error, combine context and internal
   const handleGetErrors = () => {
     return { ...contextErrors, ...errors };
   };
 
   const watch = () => {
-    return watchers;
+    return handleGetValues();
+    // return {} as DataType;
   };
 
   useEffect(() => {
-    handleSetValues(initialValues);
-    setWatchers(initialValues);
-    handleSetInitialValues(initialValues);
-    setKey((prev) => prev + 1);
-    setErrors({});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setValues(initialValues);
+    isContextEnabled && setInitValuesContext(values);
   }, [initialValues]);
 
   const totalErrors = handleGetErrors();
   // Only perform onSubmit when submit button has clicked and all values's field is not error
   useEffect(() => {
-    if (submitted && Object.values(totalErrors).every((error) => error === false)) {
-      submitCallback.current && submitCallback.current(values as any, totalErrors, handleSetErrors);
+    if (
+      submitted &&
+      Object.values(totalErrors).every((error) => error === false)
+    ) {
+      validateForSubmitting() &&
+        submitCallback.current &&
+        submitCallback.current(
+          handleGetValues(),
+          handleGetErrors(),
+          handleSetErrors
+        );
     }
-    setSubmitted(false);
+    submitted && setSubmitted(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalErrors]);
 
@@ -162,32 +179,31 @@ const useForm = <DataType extends { [x: string]: any }>({
     watchHandler({ [name]: newValue });
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const validateHandler = useCallback(
     debounce((values: DataType) => {
       if (validateOnChange) {
-        const result = validator(values, validation);
+        const result = validator(values, validation.current);
         handleSetErrors(result);
       }
     }, validationDebounceTime),
-    [],
+    []
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const watchHandler = useCallback(
     debounce((newValue: DataType) => {
-      setWatchers((prev) => ({ ...prev, ...newValue }));
       setValuesContext && setValuesContext(newValue);
     }, validationDebounceTime),
-    [],
+    []
   );
 
-  const handleSubmit = (_submitCallback: SubmitCallback<DataType>) => (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const validateForSubmitting = (): boolean => {
     const submitValues = handleGetValues();
-    // Check validated required fields in values
     let filtered: { [x: string]: any } = submitValues;
-    if (validateFields && validateFields !== undefined && validateFields.length > 0) {
+    if (
+      validateFields &&
+      validateFields !== undefined &&
+      validateFields.length > 0
+    ) {
       filtered = Object.keys(submitValues)
         .filter((key: string) => validateFields.includes(key))
         .reduce((obj: { [x: string]: any }, key: string) => {
@@ -199,54 +215,105 @@ const useForm = <DataType extends { [x: string]: any }>({
     const _validation = handleGetValidation();
     const result = validator({ ...filtered }, _validation);
     handleSetErrors({ ...contextErrors, ...errors, ...result });
-    setSubmitted(true);
-    submitCallback.current = _submitCallback;
+    return Object.values(result).every((error) => !!error === false);
   };
+
+  const handleSubmit =
+    (_submitCallback: SubmitCallback<DataType>) =>
+    (event: React.FormEvent<HTMLFormElement> | React.TouchEvent<any>) => {
+      event?.preventDefault?.();
+      setSubmitted(true);
+      submitCallback.current = _submitCallback;
+    };
 
   // Reset form
   const resetForm = (event?: React.FormEvent<HTMLFormElement>) => {
-    // event?.preventDefault();
-    const initErrors = Object.keys(handleGetValues()).reduce((acc, cur) => ({ ...acc, [cur]: false }), {});
+    // Reset when using un-controlled
+    formRef.current?.reset?.();
+    isContextEnabled && refs.length > 0 && refs[0]?.current?.reset?.();
+    // Reset when using controlled
+    const initErrors = Object.keys(handleGetValues()).reduce(
+      (acc, cur) => ({ ...acc, [cur]: false }),
+      {}
+    );
     handleSetErrors(initErrors);
     handleSetValues(handleGetInitialValues());
-    setWatchers(handleGetInitialValues());
   };
 
   // Create field
-  const useFieldProps = (fieldName: string, _validation: Validation): FieldProps => {
-    validation[fieldName] = _validation;
-    useEffect(() => {
-      setValidationContext && setValidationContext(validation);
-      setRefs && setRefs({ [fieldName]: ref });
-    }, [fieldName]);
-    const ref = useRef();
-    useEffect(() => {
-      if (ref.current) {
-        const control = ref.current as any;
-        const controlType = control.type;
-        switch (controlType) {
-          case 'checkbox':
-            control.defaultChecked = initialValues[fieldName];
-            break;
-          case 'select-one':
-            control.defaultValue = initialValues[fieldName];
-            break;
-          default:
-            break;
-        }
-      }
-    }, [fieldName, ref]);
-    return {
-      ref,
-      key: `${fieldName}-${key}`,
-      onInput: handleChange(fieldName) as any,
-      defaultValue: initialValues[fieldName],
-      required: _validation.required || false,
-    };
-  };
+  const fieldProps = useRef<{ [key: string]: any }>({});
+  const useFieldProps = useCallback(
+    (fieldName: string, _validation: Validation = {}): FieldProps => {
+      // Check existed
+      let hasStored: boolean = false;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const isDirty = useCallback(() => !deepEquals(initialValues, handleGetValues()), [initialValues, watchers, errors]);
+      if (
+        fieldProps.current?.[fieldName] &&
+        fieldProps.current?.[fieldName]?.defaultValue ===
+          initialValues[fieldName]
+      ) {
+        hasStored = true;
+      }
+
+      useEffect(() => {
+        if (!hasStored) {
+          validation.current = {
+            ...validation.current,
+            [fieldName]: _validation,
+          };
+          setValidationContext && setValidationContext(validation);
+          isContextEnabled && setRefs?.({ [fieldName]: ref });
+        }
+      }, [fieldName]);
+
+      const ref = useRef<any>();
+
+      useEffect(() => {
+        if (ref.current && !hasStored) {
+          const control = ref.current;
+          const controlType = control.type;
+          switch (controlType) {
+            case 'checkbox':
+              control.defaultChecked = initialValues[fieldName];
+              break;
+            case 'select-one':
+              control.defaultValue = initialValues[fieldName];
+              break;
+            default:
+              control.defaultValue = initialValues[fieldName];
+              break;
+          }
+
+          // Get form ref
+          if (!formRef.current) {
+            formRef.current = ref.current.closest?.('form');
+          }
+        }
+      }, [fieldName, ref]);
+
+      if (hasStored) {
+        return fieldProps.current[fieldName];
+      }
+
+      const key = JSON.stringify(initialValues[fieldName]);
+
+      const props = {
+        ref,
+        key: `${fieldName}-${key}`,
+        onInput: handleChange(fieldName) as any,
+        defaultValue: initialValues[fieldName],
+        required: _validation.required || false,
+      };
+
+      // Store in ref
+      fieldProps.current = { ...fieldProps.current, [fieldName]: props };
+      return props;
+    },
+    [initialValues]
+  );
+
+  const isDirty = () => !deepEquals(initialValues, handleGetValues());
+
   return {
     handleChange,
     values: handleGetValues(),

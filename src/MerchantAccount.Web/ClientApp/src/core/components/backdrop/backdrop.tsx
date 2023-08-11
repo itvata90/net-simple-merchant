@@ -2,7 +2,8 @@ import classNames from 'classnames';
 import { HTMLAttributes } from 'react';
 import { AsProp, CommonProps } from 'src/core/interfaces/components';
 
-export interface BackdropProps extends Partial<CommonProps & HTMLAttributes<HTMLElement> & AsProp> {
+export interface BackdropProps
+  extends Partial<CommonProps & HTMLAttributes<HTMLElement> & AsProp> {
   open?: boolean;
   animationClassName?: string;
   onClose?: Function;
@@ -24,7 +25,12 @@ const Backdrop = ({
         <Component
           {...otherProps}
           data-testid="backdrop"
-          className={classNames(bsPrefix, open && 'show', animationClassName, className)}
+          className={classNames(
+            bsPrefix,
+            open && 'show',
+            animationClassName,
+            className
+          )}
         ></Component>
       )}
       {children}

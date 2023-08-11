@@ -1,7 +1,10 @@
 import { ValidationError } from 'src/core/hooks/use-form';
 // Default validator
 
-export const defaultValidator = (values: any, validation: any): { [key: string]: any } => {
+export const defaultValidator = (
+  values: any,
+  validation: any
+): { [key: string]: any } => {
   const errors: { [key: string]: ValidationError } = {};
   if (!validation) {
     return errors;
@@ -31,16 +34,24 @@ export const defaultValidator = (values: any, validation: any): { [key: string]:
     }
 
     // Check email
-    if (validation[field].isEmail && typeof value === 'string' && !value.match(/\S+@\S+\.\S+/)) {
+    if (
+      !!value &&
+      validation[field].isEmail &&
+      typeof value === 'string' &&
+      !value.match(/\S+@\S+\.\S+/)
+    ) {
       errors[field] = 'isEmail';
       continue;
     }
 
     // Check phone
     if (
+      !!value &&
       validation[field].isPhone &&
       typeof value === 'string' &&
-      !value.match(/(^1300\d{6}$)|(^1800|1900|1902\d{6}$)|(^0[2|3|7|8]{1}[0-9]{8}$)|(^13\d{4}$)|(^04\d{2,3}\d{6}$)/)
+      !value.match(
+        /(^1300\d{6}$)|(^1800|1900|1902\d{6}$)|(^0[2|3|7|8]{1}[0-9]{8}$)|(^13\d{4}$)|(^04\d{2,3}\d{6}$)/
+      )
     ) {
       errors[field] = 'isPhone';
       continue;
@@ -76,10 +87,16 @@ export const defaultValidator = (values: any, validation: any): { [key: string]:
     }
 
     // Check pattern
-    if (validation[field].pattern && typeof value === 'string' && !value.match(validation[field].pattern)) {
+    if (
+      validation[field].pattern &&
+      typeof value === 'string' &&
+      !value.match(validation[field].pattern)
+    ) {
       errors[field] = `pattern`;
       continue;
     }
+
+    errors[field] = false;
   }
   return errors;
 };

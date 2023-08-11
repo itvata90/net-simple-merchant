@@ -3,7 +3,8 @@ import classes from 'src/core/components/list-item-icon/list-item-icon.module.sc
 import { HTMLAttributes } from 'react';
 import classNames from 'classnames';
 
-export interface ListItemIconProps extends Partial<CommonProps & HTMLAttributes<HTMLElement> & AsProp> {
+export interface ListItemIconProps
+  extends Partial<CommonProps & HTMLAttributes<HTMLElement> & AsProp> {
   disableMargin?: boolean;
 }
 const ListItemIcon = ({
@@ -14,7 +15,14 @@ const ListItemIcon = ({
   ...otherProps
 }: ListItemIconProps) => {
   return (
-    <Component {...otherProps} className={classNames(classes['list-item-icon'], !disableMargin && 'me-3', className)}>
+    <Component
+      {...otherProps}
+      className={classNames(
+        classes['list-item-icon'],
+        !disableMargin && 'me-3',
+        className
+      )}
+    >
       {children}
     </Component>
   );

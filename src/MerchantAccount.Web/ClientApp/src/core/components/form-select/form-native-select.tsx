@@ -1,7 +1,18 @@
 import classNames from 'classnames';
-import { forwardRef, useCallback, useMemo, cloneElement, isValidElement, useRef, Children } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useMemo,
+  cloneElement,
+  isValidElement,
+  useRef,
+  Children,
+} from 'react';
 import FormOption from 'src/core/components/form-option/form-option';
-import { SelectBaseProps, SelectChangeEvent } from 'src/core/interfaces/components';
+import {
+  SelectBaseProps,
+  SelectChangeEvent,
+} from 'src/core/interfaces/components';
 
 interface FormSelectProps extends Partial<SelectBaseProps> {
   feedbackType?: 'is-valid' | 'is-invalid';
@@ -24,7 +35,7 @@ const FormNativeSelect = forwardRef(
       defaultValue,
       ...otherProps
     }: FormSelectProps,
-    ref: any,
+    ref: any
   ) => {
     let bsPrefix = 'form-select';
 
@@ -44,7 +55,7 @@ const FormNativeSelect = forwardRef(
           }
           return child;
         }),
-      [children],
+      [children]
     );
 
     const handleChange = useCallback(
@@ -62,7 +73,7 @@ const FormNativeSelect = forwardRef(
         };
         return onChange && onChange(cloneEvent);
       },
-      [onChange],
+      [onChange]
     );
 
     const parseValue = (value: any) => {
@@ -76,13 +87,18 @@ const FormNativeSelect = forwardRef(
         value={value && parseValue(value)}
         defaultValue={defaultValue && parseValue(defaultValue)}
         ref={ref}
-        className={classNames(bsPrefix, className, size && `${bsPrefix}-${size}`, feedbackType)}
+        className={classNames(
+          bsPrefix,
+          className,
+          size && `${bsPrefix}-${size}`,
+          feedbackType
+        )}
         size={htmlSize}
       >
         {childrenCustomProps}
       </select>
     );
-  },
+  }
 );
 
 export default Object.assign(FormNativeSelect, { Option: FormOption });

@@ -6,7 +6,7 @@ describe('Bootstrap Alert', () => {
     render(
       <Alert color="primary" data-testid="alert-test">
         A simple primary alert—check it out!
-      </Alert>,
+      </Alert>
     );
     const element = screen.getByTestId('alert-test');
     expect(element).toBeInTheDocument();

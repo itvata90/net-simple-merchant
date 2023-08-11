@@ -10,19 +10,35 @@ export interface NavLinkProps extends Partial<LinkBaseProps & AsProp> {
 }
 
 const NavLink = forwardRef(
-  ({ className, disabled, eventKey, children, active, as: Component = 'a', ...otherProps }: NavLinkProps, ref) => {
+  (
+    {
+      className,
+      disabled,
+      eventKey,
+      children,
+      active,
+      as: Component = 'a',
+      ...otherProps
+    }: NavLinkProps,
+    ref
+  ) => {
     let bsPrefix = 'nav-link';
     return (
       <Component
         {...otherProps}
         ref={ref}
-        className={classNames(bsPrefix, disabled && 'disabled', active && 'active', className)}
+        className={classNames(
+          bsPrefix,
+          disabled && 'disabled',
+          active && 'active',
+          className
+        )}
         data-bs-target={`#${eventKey}`}
       >
         {children}
       </Component>
     );
-  },
+  }
 );
 
 export default NavLink;

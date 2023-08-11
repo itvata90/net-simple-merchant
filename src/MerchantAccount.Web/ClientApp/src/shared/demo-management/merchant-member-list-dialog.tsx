@@ -1,10 +1,10 @@
 import { AxiosResponse } from 'axios';
-import React from 'react';
+import { useMemo } from 'react';
 import merchantService from 'src/api/merchant-service';
 import Button from 'src/core/components/button/button';
 import Modal from 'src/core/components/modal/modal';
 import Stack from 'src/core/components/stack/stack';
-import Table from 'src/core/components/table/table-data';
+import Table from 'src/core/components/table-data/table-data';
 import useSearch from 'src/core/hooks/use-search';
 import { IMember } from 'src/interfaces/member';
 import DeleteButton from 'src/shared/demo-management/delete-button';
@@ -23,19 +23,19 @@ const MerchantMemberListDialog = ({ merchantId, openDialog, onClose }: MerchantM
     page,
     limit,
     handlePageChange,
-    handleAddSort,
-    handleRemoveSort,
-    handleSearch,
-    handleDataChange,
-    handleReload,
+    handleLimitChange,
   } = useSearch<AxiosResponse<Array<IMember>>>(
-    (url: string, config: any) => merchantService.getMembers(url + merchantId, config),
-    undefined,
-    (fields) =>
-      Object.entries(fields).reduce(
-        (acc, [fieldName, orderBy]) => (acc += 'sortBy=' + fieldName + '&order=' + orderBy),
-        '',
-      ),
+    (url: string, config: any) => merchantService.getMembers(merchantId, url, config),
+    {
+      getPaginationString: (page: any, limit: any) => `offset=${(page - 1) * limit}&limit=${limit}`,
+      getSortingString: (fields) =>
+        Object.entries(fields).reduce(
+          (acc, [fieldName, orderBy]) => (acc += 'sortBy=' + fieldName + '&order=' + orderBy),
+          '',
+        ),
+      limit: 5,
+      page: 1,
+    },
   );
 
   const rows = data?.data ?? [];
@@ -43,20 +43,15 @@ const MerchantMemberListDialog = ({ merchantId, openDialog, onClose }: MerchantM
   const maxPage = !count ? 1 : Math.ceil(Number(count) / limit);
 
   const columns = [
-    { name: 'Id', field: 'id', searchable: true, sortable: true },
-    { name: 'Username', field: 'username', searchable: true, sortable: true },
-    { name: 'Email', field: 'email', searchable: true, sortable: true },
+    { name: 'Id', field: 'id' },
+    { name: 'Username', field: 'username' },
     {
       name: 'First Name',
       field: 'firstName',
-      searchable: true,
-      sortable: true,
     },
     {
       name: 'Last Name',
       field: 'lastName',
-      searchable: true,
-      sortable: true,
     },
 
     {
@@ -69,21 +64,32 @@ const MerchantMemberListDialog = ({ merchantId, openDialog, onClose }: MerchantM
       ),
     },
   ];
+
+  const pageLimits = useMemo(() => [5, 10, 15], []);
   return (
-    <Modal open={openDialog} onClose={onClose} animation backdrop size="lg">
-      <Modal.Header as="h5">Members list</Modal.Header>
+    <Modal data-testid="merchant-member-list" open={openDialog} onClose={onClose} animation backdrop size="lg">
+      <Modal.Header className="d-flex">
+        <h5 className="m-0">Members list</h5>{' '}
+        <Button onClick={onClose} type="button" className="btn-close" aria-label="Close" size="sm" />
+      </Modal.Header>
 
       <Modal.Body>
         <Table
+          inlineEditing={false}
+          renderHeader={() => <></>}
+          currentPage={page}
           loading={loading}
           indexField="id"
           columns={columns}
           rows={rows}
-          // onAddSortByAsc={(field: string) => handleAddSort(field)}
-          // onAddSortByDesc={(field: string) => handleAddSort(field, true)}
-          // onRemoveSortBy={handleRemoveSort}
-          // onSearch={handleSearch}
-          // pageLimits={[5, 10]}
+          pageCount={maxPage}
+          pageLimits={pageLimits}
+          onPageChange={(page) => handlePageChange(+page)}
+          onLimitChange={(limit) => {
+            handleLimitChange(+limit);
+          }}
+          fixedNumberRows
+          filterOnChange
           hover
         />
       </Modal.Body>

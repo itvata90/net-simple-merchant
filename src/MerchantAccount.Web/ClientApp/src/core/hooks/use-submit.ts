@@ -33,19 +33,6 @@ const initialState: SubmitState<any> = {
   loading: false,
 };
 
-const submitReducer = <DataType = unknown>(state: SubmitState<DataType>, action: SubmitAction<DataType>) => {
-  switch (action.type) {
-    case SUBMIT_ACTION_TYPES.SUBMITTING:
-      return { ...initialState, loading: true };
-    case SUBMIT_ACTION_TYPES.FULLFIL:
-      return { ...initialState, loading: false, data: action.payload };
-    case SUBMIT_ACTION_TYPES.ERROR:
-      return { ...initialState, loading: false, error: action.payload };
-    default:
-      return state;
-  }
-};
-
 /**
  * useSubmit hook: adding loading, error state for use form hook api
  * @param useFormApi
@@ -56,7 +43,20 @@ const useSubmit = <DataType = unknown>(
   useFormApi: UseFormReturnType<DataType>,
   fetcher: (formData: any, config?: { [key: string]: any }) => any,
 ): UseFormSubmitReturnType<DataType> => {
-  const [submitState, submitDispatch] = useReducer(submitReducer<DataType>, initialState);
+  const submitReducer = (state: SubmitState<DataType>, action: SubmitAction<DataType>) => {
+    switch (action.type) {
+      case SUBMIT_ACTION_TYPES.SUBMITTING:
+        return { ...initialState, loading: true };
+      case SUBMIT_ACTION_TYPES.FULLFIL:
+        return { ...initialState, loading: false, data: action.payload };
+      case SUBMIT_ACTION_TYPES.ERROR:
+        return { ...initialState, loading: false, error: action.payload };
+      default:
+        return state;
+    }
+  };
+
+  const [submitState, submitDispatch] = useReducer(submitReducer, initialState);
   const addOrUpdate = useCallback(async () => {
     submitDispatch({ type: SUBMIT_ACTION_TYPES.SUBMITTING });
 
@@ -64,7 +64,8 @@ const useSubmit = <DataType = unknown>(
       const response = await fetcher(useFormApi.values);
       submitDispatch({ type: SUBMIT_ACTION_TYPES.FULLFIL, payload: response.data as DataType });
     } catch (error: any) {
-      submitDispatch({ type: SUBMIT_ACTION_TYPES.ERROR, payload: error.message });
+      console.log('err', error.message);
+      submitDispatch({ type: SUBMIT_ACTION_TYPES.ERROR, payload: error.message || String(error) });
     }
   }, [fetcher, useFormApi]);
 

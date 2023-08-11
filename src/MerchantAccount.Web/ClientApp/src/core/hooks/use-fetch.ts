@@ -1,31 +1,48 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 
 interface State<T> {
   data?: T;
   error?: Error;
 }
 
+interface ReturnType<T> extends State<T> {
+  mutate: Function;
+}
+
 type Cache<T> = { [url: string]: T };
 
 // discriminated union type
-type Action<T> = { type: 'loading' } | { type: 'fetched'; payload: T } | { type: 'error'; payload: Error };
+type Action<T> =
+  | { type: 'loading' }
+  | { type: 'fetched'; payload: T }
+  | { type: 'error'; payload: Error };
 
-function useFetch<T = unknown>(url: string, fetcher: (url?: string, config?: RequestInit) => any): State<T> {
+const loadingState = {
+  error: undefined,
+  data: undefined,
+};
+
+function useFetch<T = unknown>(
+  url: string,
+  fetcher: (url?: string, config?: RequestInit) => any,
+  config?: {
+    deps?: any[];
+    skipCondition?: () => boolean;
+  }
+): ReturnType<T> {
   const cache = useRef<Cache<T>>({});
-
+  const [reload, setReload] = useState<boolean>(false);
   // Used to prevent state update if the component is unmounted
   const cancelRequest = useRef<boolean>(false);
-
-  const initialState: State<T> = {
-    error: undefined,
-    data: undefined,
-  };
+  const initialState: State<T> = loadingState;
+  // Store previous reload state
+  const preReloadState = useRef<boolean>(false);
 
   // Keep state logic separated
   const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
     switch (action.type) {
       case 'loading':
-        return { ...initialState };
+        return initialState;
       case 'fetched':
         return { ...initialState, data: action.payload };
       case 'error':
@@ -36,29 +53,35 @@ function useFetch<T = unknown>(url: string, fetcher: (url?: string, config?: Req
   };
 
   const [state, dispatch] = useReducer(fetchReducer, initialState);
+  const mutate = (newData?: T, refresh?: boolean) => {
+    if (!!newData) {
+      cache.current[url] = newData;
+      refresh && dispatch({ type: 'fetched', payload: cache.current[url] });
+    } else {
+      setReload((prev) => !prev);
+    }
+  };
 
   useEffect(() => {
     // Do nothing if the url is not given
     if (!url) return;
+    if (!!config?.skipCondition && config.skipCondition()) return;
 
     cancelRequest.current = false;
 
     const fetchData = async () => {
-      dispatch({ type: 'loading' });
+      state !== loadingState && dispatch({ type: 'loading' });
 
       // If a cache exists for this url, return it
-      if (cache.current[url]) {
+      if (cache.current[url] && reload === preReloadState.current) {
         dispatch({ type: 'fetched', payload: cache.current[url] });
         return;
       }
+      preReloadState.current = reload;
 
       try {
-        const response = await fetcher(url);
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
+        const data = await fetcher(url);
 
-        const data = (await response.json()) as T;
         cache.current[url] = data;
         if (cancelRequest.current) return;
 
@@ -69,7 +92,6 @@ function useFetch<T = unknown>(url: string, fetcher: (url?: string, config?: Req
         dispatch({ type: 'error', payload: error as Error });
       }
     };
-
     void fetchData();
 
     // Use the cleanup function for avoiding a possibly...
@@ -78,9 +100,9 @@ function useFetch<T = unknown>(url: string, fetcher: (url?: string, config?: Req
       cancelRequest.current = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
+  }, [url, reload, ...(config?.deps ?? [])]);
 
-  return state;
+  return { ...state, mutate };
 }
 
 export default useFetch;

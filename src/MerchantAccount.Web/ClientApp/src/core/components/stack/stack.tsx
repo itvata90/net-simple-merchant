@@ -1,7 +1,12 @@
 import classNames from 'classnames';
 import { forwardRef } from 'react';
-import { createBreakpointsClassName } from 'src/core/functions/create_breakpoints_class_name';
-import { AlignOptions, Breakpoints, JustifyOptions, StackBaseProps } from 'src/core/interfaces/components';
+import { createBreakpointsClassName } from 'src/core/functions/create-breakpoints-class-name';
+import {
+  AlignOptions,
+  Breakpoints,
+  JustifyOptions,
+  StackBaseProps,
+} from 'src/core/interfaces/components';
 
 export interface StackProps extends Partial<StackBaseProps> {
   spacing?: number | Partial<Breakpoints<number>>;
@@ -24,12 +29,18 @@ const Stack = forwardRef(
       direction = 'column',
       ...otherProps
     }: StackProps,
-    ref,
+    ref
   ) => {
     let bsPrefix = direction === 'column' ? 'vstack' : 'hstack';
-    let justifyContentClassName = createBreakpointsClassName('justify-content', justifyContent);
+    let justifyContentClassName = createBreakpointsClassName(
+      'justify-content',
+      justifyContent
+    );
 
-    let alignItemsClassName = createBreakpointsClassName('align-items', alignItems);
+    let alignItemsClassName = createBreakpointsClassName(
+      'align-items',
+      alignItems
+    );
 
     let spacingClassName = createBreakpointsClassName('gap', spacing);
 
@@ -42,11 +53,11 @@ const Stack = forwardRef(
           justifyContent && justifyContentClassName,
           alignItems && alignItemsClassName,
           spacing && spacingClassName,
-          className,
+          className
         )}
       />
     );
-  },
+  }
 );
 
 export default Stack;

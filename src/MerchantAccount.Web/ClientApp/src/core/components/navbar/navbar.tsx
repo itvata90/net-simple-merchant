@@ -11,12 +11,26 @@ export interface NavbarToggleProps extends Partial<NavbarBaseProps> {
 }
 export interface NavbarCollapseProps extends Partial<NavbarBaseProps> {}
 
-const NavbarCollapse = ({ className, as: Component = 'div', ...otherProps }: NavbarCollapseProps) => {
+const NavbarCollapse = ({
+  className,
+  as: Component = 'div',
+  ...otherProps
+}: NavbarCollapseProps) => {
   let bsPrefix = 'navbar-collapse collapse';
-  return <Component {...otherProps} className={classNames(bsPrefix, className)}></Component>;
+  return (
+    <Component
+      {...otherProps}
+      className={classNames(bsPrefix, className)}
+    ></Component>
+  );
 };
 
-const NavbarToggle = ({ className, as: Component = 'button', for: controlFor, ...otherProps }: NavbarToggleProps) => {
+const NavbarToggle = ({
+  className,
+  as: Component = 'button',
+  for: controlFor,
+  ...otherProps
+}: NavbarToggleProps) => {
   let bsPrefix = 'navbar-toggler';
   return (
     <Component
@@ -32,16 +46,29 @@ const NavbarToggle = ({ className, as: Component = 'button', for: controlFor, ..
   );
 };
 
-const NavbarBrand = ({ className, as: Component = 'a', ...otherProps }: NavbarBrandProps) => {
+const NavbarBrand = ({
+  className,
+  as: Component = 'a',
+  ...otherProps
+}: NavbarBrandProps) => {
   let bsPrefix = 'navbar-brand';
-  return <Component {...otherProps} className={classNames(bsPrefix, className)} />;
+  return (
+    <Component {...otherProps} className={classNames(bsPrefix, className)} />
+  );
 };
 
 /**
  * Navbar component
  *
  */
-const Navbar = ({ className, as: Component = 'nav', background, variant, expand, ...otherProps }: NavbarProps) => {
+const Navbar = ({
+  className,
+  as: Component = 'nav',
+  background,
+  variant,
+  expand,
+  ...otherProps
+}: NavbarProps) => {
   let bsPrefix = 'navbar';
   return (
     <Component
@@ -51,7 +78,7 @@ const Navbar = ({ className, as: Component = 'nav', background, variant, expand,
         background && `bg-${background}`,
         variant === 'dark' && `${bsPrefix}-dark`,
         expand && `${bsPrefix}-expand-${expand}`,
-        className,
+        className
       )}
     />
   );

@@ -3,7 +3,8 @@ import { Collapse as BsCollapse } from 'bootstrap';
 import classNames from 'classnames';
 import { AsProp, CommonProps } from 'src/core/interfaces/components';
 
-export interface CollapseProps extends Partial<CommonProps & HTMLAttributes<HTMLElement> & AsProp> {
+export interface CollapseProps
+  extends Partial<CommonProps & HTMLAttributes<HTMLElement> & AsProp> {
   in?: boolean;
   direction?: 'vertical' | 'horizontal';
 }
@@ -35,7 +36,11 @@ const Collapse = ({
     <Component
       {...otherProps}
       ref={collapseRef}
-      className={classNames(bsPrefix, direction === 'horizontal' && `${bsPrefix}-horizontal`, className)}
+      className={classNames(
+        bsPrefix,
+        direction === 'horizontal' && `${bsPrefix}-horizontal`,
+        className
+      )}
     />
   );
 };

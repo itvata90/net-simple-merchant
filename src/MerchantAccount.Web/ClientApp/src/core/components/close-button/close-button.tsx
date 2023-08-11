@@ -10,12 +10,19 @@ export interface CloseButtonProps extends Partial<ButtonBaseProps> {
  * CloseButton component
  *
  */
-const CloseButton = forwardRef(({ className, dismiss, ...otherProps }: CloseButtonProps, ref) => {
-  let bsPrefix = `btn-close`;
+const CloseButton = forwardRef(
+  ({ className, dismiss, ...otherProps }: CloseButtonProps, ref) => {
+    let bsPrefix = `btn-close`;
 
-  return (
-    <button {...otherProps} ref={ref as any} className={classNames(bsPrefix, className)} data-bs-dismiss={dismiss} />
-  );
-});
+    return (
+      <button
+        {...otherProps}
+        ref={ref as any}
+        className={classNames(bsPrefix, className)}
+        data-bs-dismiss={dismiss}
+      />
+    );
+  }
+);
 
 export default CloseButton;

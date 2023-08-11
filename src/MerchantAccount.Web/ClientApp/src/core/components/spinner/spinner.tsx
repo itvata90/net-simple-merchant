@@ -13,7 +13,17 @@ export interface SpinnerProps extends Partial<SpinnerBaseProps> {
  *
  */
 const Spinner = forwardRef(
-  ({ className, as: Component = 'div', variant = 'border', color, size, ...otherProps }: SpinnerProps, ref) => {
+  (
+    {
+      className,
+      as: Component = 'div',
+      variant = 'border',
+      color,
+      size,
+      ...otherProps
+    }: SpinnerProps,
+    ref
+  ) => {
     let bsPrefix = `spinner-${variant}`;
     let colorPrefix = 'text';
 
@@ -21,10 +31,15 @@ const Spinner = forwardRef(
       <Component
         {...otherProps}
         ref={ref}
-        className={classNames(bsPrefix, size && `${bsPrefix}-${size}`, color && `${colorPrefix}-${color}`, className)}
+        className={classNames(
+          bsPrefix,
+          size && `${bsPrefix}-${size}`,
+          color && `${colorPrefix}-${color}`,
+          className
+        )}
       />
     );
-  },
+  }
 );
 
 export default Spinner;

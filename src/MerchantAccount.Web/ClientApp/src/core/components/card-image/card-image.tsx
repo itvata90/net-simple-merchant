@@ -10,20 +10,41 @@ export interface CardImageProps extends Partial<ImageBaseProps> {
  * CardImage component
  *
  */
-const CardImage = forwardRef(({ className, alt, position = 'top', children, ...otherProps }: CardImageProps, ref) => {
-  let bsPrefix = position === 'overlay' ? `card-img` : `card-img-${position}`;
-  return (
-    <>
-      {position === 'overlay' ? (
-        <>
-          <img {...otherProps} ref={ref as any} alt={alt} className={classNames(bsPrefix, className)} />
-          <div className={`${bsPrefix}-overlay`}>{children}</div>
-        </>
-      ) : (
-        <img {...otherProps} ref={ref as any} alt={alt} className={classNames(bsPrefix, className)} />
-      )}
-    </>
-  );
-});
+const CardImage = forwardRef(
+  (
+    {
+      className,
+      alt,
+      position = 'top',
+      children,
+      ...otherProps
+    }: CardImageProps,
+    ref
+  ) => {
+    let bsPrefix = position === 'overlay' ? `card-img` : `card-img-${position}`;
+    return (
+      <>
+        {position === 'overlay' ? (
+          <>
+            <img
+              {...otherProps}
+              ref={ref as any}
+              alt={alt}
+              className={classNames(bsPrefix, className)}
+            />
+            <div className={`${bsPrefix}-overlay`}>{children}</div>
+          </>
+        ) : (
+          <img
+            {...otherProps}
+            ref={ref as any}
+            alt={alt}
+            className={classNames(bsPrefix, className)}
+          />
+        )}
+      </>
+    );
+  }
+);
 
 export default CardImage;

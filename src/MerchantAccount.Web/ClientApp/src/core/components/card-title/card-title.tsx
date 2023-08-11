@@ -10,9 +10,20 @@ export interface CardTitleProps extends Partial<HeadingBaseProps> {
  * CardTitle component
  *
  */
-const CardTitle = forwardRef(({ className, variant: Component = 'h5', ...otherProps }: CardTitleProps, ref) => {
-  let bsPrefix = `card-title`;
-  return <Component {...otherProps} ref={ref as any} className={classNames(bsPrefix, className)} />;
-});
+const CardTitle = forwardRef(
+  (
+    { className, variant: Component = 'h5', ...otherProps }: CardTitleProps,
+    ref
+  ) => {
+    let bsPrefix = `card-title`;
+    return (
+      <Component
+        {...otherProps}
+        ref={ref as any}
+        className={classNames(bsPrefix, className)}
+      />
+    );
+  }
+);
 
 export default CardTitle;

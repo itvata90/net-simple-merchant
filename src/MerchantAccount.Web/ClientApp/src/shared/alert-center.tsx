@@ -1,4 +1,3 @@
-import Alert from 'src/core/components/alert/alert';
 import CloseButton from 'src/core/components/close-button/close-button';
 import Toast from 'src/core/components/toast/toast';
 import { useAlert } from 'src/core/hooks/alert-context';
@@ -9,9 +8,9 @@ const AlertCenter = () => {
     <Toast
       placement={{
         vertical: 'top',
-        horizontal: 'center',
+        horizontal: 'right',
       }}
-      style={{ marginBlockStart: 50 }}
+      style={{ marginBlockStart: 10, marginInlineEnd: 10 }}
       open={show}
       delay={1000}
       onClose={() => setShow(false)}

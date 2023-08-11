@@ -11,7 +11,16 @@ export interface ButtonGroupProps extends Partial<ButtonGroupBaseProps> {
  *
  */
 const ButtonGroup = forwardRef(
-  ({ size, className, as: Component = 'div', direction, ...otherProps }: ButtonGroupProps, ref) => {
+  (
+    {
+      size,
+      className,
+      as: Component = 'div',
+      direction,
+      ...otherProps
+    }: ButtonGroupProps,
+    ref
+  ) => {
     let bsPrefix = 'btn-group';
     return (
       <Component
@@ -20,11 +29,11 @@ const ButtonGroup = forwardRef(
         className={classNames(
           direction === 'vertical' ? `${bsPrefix}-vertical` : bsPrefix,
           className,
-          size && `${bsPrefix}-${size}`,
+          size && `${bsPrefix}-${size}`
         )}
       />
     );
-  },
+  }
 );
 
 export default ButtonGroup;

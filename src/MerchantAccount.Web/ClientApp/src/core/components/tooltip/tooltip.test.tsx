@@ -10,13 +10,15 @@ describe('Bootstrap Toast', () => {
         <button data-testid="child" className="btn btn-primary" type="button">
           My button
         </button>
-      </Tooltip>,
+      </Tooltip>
     );
     const element = screen.getByRole('button');
     expect(element).toBeInTheDocument();
     await act(async () => {
       userEvent.hover(element);
-      await waitFor(() => expect(element).toHaveAttribute('aria-describedby'), { timeout: 2000 });
+      await waitFor(() => expect(element).toHaveAttribute('aria-describedby'), {
+        timeout: 2000,
+      });
     });
   });
 });

@@ -2,9 +2,13 @@ import classNames from 'classnames';
 import { forwardRef, ReactNode } from 'react';
 import FormCheckInput from 'src/core/components/form-check-input/form-check-input';
 import FormCheckLabel from 'src/core/components/form-check-label/form-check-label';
-import { FeedbackType, FormCheckBaseProps } from 'src/core/interfaces/components';
+import {
+  FeedbackType,
+  FormCheckBaseProps,
+} from 'src/core/interfaces/components';
 
-interface FormCheckContainerProps extends Partial<Omit<FormCheckBaseProps, 'type'>> {
+interface FormCheckContainerProps
+  extends Partial<Omit<FormCheckBaseProps, 'type'>> {
   type?: 'checkbox' | 'radio' | 'switch';
   inline?: boolean;
   reverse?: boolean;
@@ -29,7 +33,7 @@ const FormCheck = forwardRef(
       feedbackType,
       ...otherProps
     }: FormCheckContainerProps,
-    ref,
+    ref
   ) => {
     let bsPrefix = 'form-check';
     let bsPrefixSwitch = 'form-switch';
@@ -40,7 +44,7 @@ const FormCheck = forwardRef(
           className,
           inline && `${bsPrefix}-inline`,
           reverse && `${bsPrefix}-reverse`,
-          type === 'switch' && bsPrefixSwitch,
+          type === 'switch' && bsPrefixSwitch
         )}
       >
         {children || (
@@ -56,7 +60,7 @@ const FormCheck = forwardRef(
         )}
       </div>
     );
-  },
+  }
 );
 
 export default Object.assign(FormCheck, {

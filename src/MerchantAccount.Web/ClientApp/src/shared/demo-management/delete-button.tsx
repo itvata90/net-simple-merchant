@@ -40,10 +40,18 @@ const DeleteButton = ({ fieldId, onDelete, fetcher }: DeleteButtonProps) => {
 
   return (
     <>
-      <Button id={`delete-role-button-${fieldId}`} onClick={handleClickDelete} color="danger">
+      <Button
+        role="delete-button"
+        id={`delete-role-button-${fieldId}`}
+        onClick={handleClickDelete}
+        color="danger"
+        className="d-flex"
+      >
         <AiOutlineDelete />
       </Button>
       <ConfirmationDialog
+        headerText="Confirm delete"
+        content="Are you sure delete this item?"
         loading={loading}
         fieldId={fieldId}
         id={`confirm-dialog-${fieldId}`}

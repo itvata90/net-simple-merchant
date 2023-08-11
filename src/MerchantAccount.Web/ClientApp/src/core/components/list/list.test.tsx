@@ -13,7 +13,7 @@ describe('Bootstrap List', () => {
         <hr />
         <List.Item>Hello</List.Item>
         <List.Item>Hello</List.Item>
-      </List>,
+      </List>
     );
     const element = screen.getByTestId('list-test');
     expect(element).toBeInTheDocument();

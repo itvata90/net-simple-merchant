@@ -1,8 +1,15 @@
 import classNames from 'classnames';
 import { ElementType, ReactNode } from 'react';
-import PaginationItem, { PaginationItemProps } from 'src/core/components/pagination-item/pagination-item';
+import PaginationItem, {
+  PaginationItemProps,
+} from 'src/core/components/pagination-item/pagination-item';
 import usePagination from 'src/core/components/pagination/use-pagination';
-import { AsProp, Color, CommonProps, Size } from 'src/core/interfaces/components';
+import {
+  AsProp,
+  Color,
+  CommonProps,
+  Size,
+} from 'src/core/interfaces/components';
 
 export interface PaginationProps extends Partial<CommonProps & AsProp> {
   children?: ReactNode;
@@ -34,6 +41,7 @@ export interface PaginationProps extends Partial<CommonProps & AsProp> {
 
 const Pagination = ({
   className,
+
   as: Component = 'ul',
   count = 1,
   defaultPage = 1,
@@ -58,7 +66,13 @@ const Pagination = ({
   ...otherProps
 }: PaginationProps) => {
   let bsPrefix = 'pagination';
-  const { items, currentPage, handleChangePage, getPageChange, getRenderValue } = usePagination({
+  const {
+    items,
+    currentPage,
+    handleChangePage,
+    getPageChange,
+    getRenderValue,
+  } = usePagination({
     count,
     page,
     onChange,
@@ -76,15 +90,18 @@ const Pagination = ({
   });
 
   return (
-    <Component {...otherProps} className={classNames(bsPrefix, className)}>
+    <Component
+      {...otherProps}
+      className={classNames(bsPrefix, size && `${bsPrefix}-${size}`, className)}
+    >
       {children}
       {!children && (
         <>
-          {items.map((value) => (
+          {items.map((value, index) => (
             <PageItemComponent
-              key={value}
+              key={index}
               color={color}
-              disabled={disabled || value === '...'}
+              disabled={disabled || value === 'ellipse'}
               onClick={handleChangePage(getPageChange(value))}
               active={currentPage === value}
             >

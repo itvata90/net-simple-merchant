@@ -8,14 +8,20 @@ interface FormOptionProps extends Partial<OptionBaseProps> {}
  * FormOption component
  *
  */
-const FormOption = forwardRef(({ className, children, ...otherProps }: FormOptionProps, ref: any) => {
-  let bsPrefix = 'form-option';
+const FormOption = forwardRef(
+  ({ className, children, ...otherProps }: FormOptionProps, ref: any) => {
+    let bsPrefix = 'form-option';
 
-  return (
-    <option {...otherProps} ref={ref} className={classNames(bsPrefix, className)}>
-      {children}
-    </option>
-  );
-});
+    return (
+      <option
+        {...otherProps}
+        ref={ref}
+        className={classNames(bsPrefix, className)}
+      >
+        {children}
+      </option>
+    );
+  }
+);
 
 export default FormOption;

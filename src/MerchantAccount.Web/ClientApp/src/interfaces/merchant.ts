@@ -7,6 +7,6 @@ export interface IMerchant extends Tracking {
   district?: string;
   email?: string;
   phone?: string;
-  ownerId?: number;
+  ownerId?: number | string;
   status?: string;
 }

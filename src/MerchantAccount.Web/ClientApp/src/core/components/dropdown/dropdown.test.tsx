@@ -11,7 +11,7 @@ describe('Bootstrap Dropdown', () => {
           <Dropdown.Item as="button">Another action</Dropdown.Item>
           <Dropdown.Item as="button">Something else here</Dropdown.Item>
         </Dropdown.Menu>
-      </Dropdown>,
+      </Dropdown>
     );
     const element = screen.getByTestId('dropdown-test');
     expect(element).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe('Bootstrap Dropdown', () => {
           <Dropdown.Item as="button">Another action</Dropdown.Item>
           <Dropdown.Item as="button">Something else here</Dropdown.Item>
         </Dropdown.Menu>
-      </Dropdown>,
+      </Dropdown>
     );
     const element = screen.getByTestId('dropdown-test-wrapper');
     const toggle = screen.getByTestId('dropdown-toggle-test');

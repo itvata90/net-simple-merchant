@@ -10,14 +10,27 @@ export interface DropdownItemTextProps extends Partial<ListItemBaseProps> {
  *
  */
 const DropdownItemText = forwardRef(
-  ({ as: Component = 'span', className, containerClassName, ...otherProps }: DropdownItemTextProps, ref) => {
+  (
+    {
+      as: Component = 'span',
+      className,
+      containerClassName,
+      ...otherProps
+    }: DropdownItemTextProps,
+    ref
+  ) => {
     let bsPrefix = 'dropdown-item-text';
     return (
       <li className={containerClassName}>
-        <Component {...otherProps} ref={ref} className={classNames(bsPrefix, className)} />;
+        <Component
+          {...otherProps}
+          ref={ref}
+          className={classNames(bsPrefix, className)}
+        />
+        ;
       </li>
     );
-  },
+  }
 );
 
 export default DropdownItemText;

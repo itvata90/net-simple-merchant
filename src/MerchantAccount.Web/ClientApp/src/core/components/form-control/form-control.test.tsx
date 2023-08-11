@@ -18,7 +18,9 @@ describe('Bootstrap FormControl', () => {
     expect(inputEl).toHaveAttribute('readonly');
   });
   it('Should render form control as textarea', () => {
-    render(<FormControl data-testid="form-control-test-textarea" as="textarea" />);
+    render(
+      <FormControl data-testid="form-control-test-textarea" as="textarea" />
+    );
     const inputEl = screen.getByTestId('form-control-test-textarea');
     expect(inputEl.tagName.toLowerCase()).toBe('textarea');
   });

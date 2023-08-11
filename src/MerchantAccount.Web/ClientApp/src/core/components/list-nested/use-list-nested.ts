@@ -20,7 +20,10 @@ const useListNested = (items: ItemsObject[], draggable: boolean = false) => {
 
   useEffect(() => {
     if (items) {
-      const _expanded = items.reduce((acc, cur, index) => [...acc, ...(cur.collapsed ? [index] : [])] as any, []);
+      const _expanded = items.reduce(
+        (acc, cur, index) => [...acc, ...(cur.collapsed ? [index] : [])] as any,
+        []
+      );
       setExpanded(_expanded);
       const _orders = items.map((_, index: number) => index);
       setOrders(_orders);

@@ -10,10 +10,21 @@ export interface ToastBodyProps extends Partial<CommonProps & AsProp> {
  * ToastBody component
  *
  */
-const ToastBody = forwardRef(({ className, as: Component = 'div', ...otherProps }: ToastBodyProps, ref) => {
-  let bsPrefix = 'toast-body';
+const ToastBody = forwardRef(
+  (
+    { className, as: Component = 'div', ...otherProps }: ToastBodyProps,
+    ref
+  ) => {
+    let bsPrefix = 'toast-body';
 
-  return <Component {...otherProps} ref={ref} className={classNames(bsPrefix, className)} />;
-});
+    return (
+      <Component
+        {...otherProps}
+        ref={ref}
+        className={classNames(bsPrefix, className)}
+      />
+    );
+  }
+);
 
 export default ToastBody;

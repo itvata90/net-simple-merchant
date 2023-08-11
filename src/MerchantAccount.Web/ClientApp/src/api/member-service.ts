@@ -1,11 +1,10 @@
-import client, { ResponseListDataType, Service } from 'src/api/http-client-setup';
+import client, { Service } from 'src/lib/http-client-setup';
 import { IMember } from 'src/interfaces/member';
 
 const memberAPI = '/members/';
 
 class MemberService implements Service<IMember> {
-  get = (queryString: string = '', config?: any) =>
-    client.get<ResponseListDataType<IMember>>(memberAPI + queryString, config);
+  get = (queryString: string = '', config?: any) => client.get<IMember[]>(memberAPI + queryString, config);
 
   getSingle = (id: string | number, config?: any) => client.get<IMember>(memberAPI + id, config);
 

@@ -4,7 +4,8 @@ import { ElementType, useEffect, useRef, useState } from 'react';
 import Button from 'src/core/components/button/button';
 import { ButtonBaseProps } from 'src/core/interfaces/components';
 
-export interface DropdownToggleProps extends Partial<Omit<ButtonBaseProps, 'as'>> {
+export interface DropdownToggleProps
+  extends Partial<Omit<ButtonBaseProps, 'as'>> {
   href?: string;
   disabled?: boolean;
   show?: boolean;
@@ -57,7 +58,8 @@ const DropdownToggle = ({
   };
 
   let menuProps: { [key: string]: any } = {};
-  menuProps['data-bs-offset'] = menuOffset && `${menuOffset?.left},${menuOffset?.top}`;
+  menuProps['data-bs-offset'] =
+    menuOffset && `${menuOffset?.left},${menuOffset?.top}`;
 
   return (
     <Component

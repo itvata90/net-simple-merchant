@@ -1,10 +1,23 @@
 import classNames from 'classnames';
-import React, { forwardRef, LegacyRef, useRef } from 'react';
+import { forwardRef } from 'react';
 import { TableBaseProps } from 'src/core/interfaces/components';
 
 export interface TableProps extends TableBaseProps {}
 const Table = forwardRef<HTMLTableElement, TableBaseProps>(
-  ({ className, color, striped, hover, bordered, borderColor, responsive, children, ...otherProps }, ref) => {
+  (
+    {
+      className,
+      color,
+      striped,
+      hover,
+      bordered,
+      borderColor,
+      responsive,
+      children,
+      ...otherProps
+    },
+    ref
+  ) => {
     let bsPrefix = 'table';
 
     let tableColorClassName = bsPrefix;
@@ -32,13 +45,13 @@ const Table = forwardRef<HTMLTableElement, TableBaseProps>(
           hover && `${bsPrefix}-hover`,
           bordered && `${bsPrefix}-bordered ` + tableBorderColorClassName,
           true && `${bsPrefix}-responsive`,
-          'mb-0',
+          'mb-0'
         )}
       >
         {children}
       </table>
     );
-  },
+  }
 );
 
 export default Table;

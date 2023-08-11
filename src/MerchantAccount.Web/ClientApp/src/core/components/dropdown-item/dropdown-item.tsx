@@ -26,7 +26,7 @@ const DropdownItem = forwardRef(
       containerClassName,
       ...otherProps
     }: DropdownItemProps,
-    ref,
+    ref
   ) => {
     let bsPrefix = 'dropdown-item';
     let Component = href ? 'a' : as;
@@ -56,14 +56,14 @@ const DropdownItem = forwardRef(
             bsPrefix,
             active && `active`,
             (href || as === 'a') && disabled && 'disabled',
-            className,
+            className
           )}
         >
           {children}
         </Component>
       </li>
     );
-  },
+  }
 );
 
 export default DropdownItem;

@@ -1,6 +1,9 @@
 import classNames from 'classnames';
 import { forwardRef } from 'react';
-import { FeedbackType, FormRangeBaseProps } from 'src/core/interfaces/components';
+import {
+  FeedbackType,
+  FormRangeBaseProps,
+} from 'src/core/interfaces/components';
 
 interface FormRangeProps extends Partial<FormRangeBaseProps> {
   feedbackType?: FeedbackType;
@@ -10,16 +13,26 @@ interface FormRangeProps extends Partial<FormRangeBaseProps> {
  * FormRange component
  *
  */
-const FormRange = forwardRef(({ className, size, feedbackType, ...otherProps }: FormRangeProps, ref: any) => {
-  let bsPrefix = 'form-range';
-  return (
-    <input
-      {...otherProps}
-      ref={ref}
-      type="range"
-      className={classNames(bsPrefix, className, size && `${bsPrefix}-${size}`, feedbackType)}
-    />
-  );
-});
+const FormRange = forwardRef(
+  (
+    { className, size, feedbackType, ...otherProps }: FormRangeProps,
+    ref: any
+  ) => {
+    let bsPrefix = 'form-range';
+    return (
+      <input
+        {...otherProps}
+        ref={ref}
+        type="range"
+        className={classNames(
+          bsPrefix,
+          className,
+          size && `${bsPrefix}-${size}`,
+          feedbackType
+        )}
+      />
+    );
+  }
+);
 
 export default FormRange;

@@ -9,7 +9,20 @@ export type ContainerProps = Partial<ContainerBaseProps>;
  *
  */
 const Container = forwardRef(
-  ({ className, as: Component = 'div', sm, md, lg, xl, xxl, fluid, ...otherProps }: ContainerProps, ref) => {
+  (
+    {
+      className,
+      as: Component = 'div',
+      sm,
+      md,
+      lg,
+      xl,
+      xxl,
+      fluid,
+      ...otherProps
+    }: ContainerProps,
+    ref
+  ) => {
     let bsPrefix = 'container';
     // Breakpoint width
     return (
@@ -24,11 +37,11 @@ const Container = forwardRef(
           xl && `${bsPrefix}-xl`,
           xxl && `${bsPrefix}-xxl`,
           fluid && `${bsPrefix}-fluid`,
-          className,
+          className
         )}
       />
     );
-  },
+  }
 );
 
 export default Container;

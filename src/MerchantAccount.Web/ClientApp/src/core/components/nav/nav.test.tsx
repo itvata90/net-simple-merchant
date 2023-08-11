@@ -11,10 +11,10 @@ describe('Bootstrap Nav', () => {
         <Nav.Link href="#" disabled>
           Disabled
         </Nav.Link>
-      </Nav>,
+      </Nav>
     );
     const element = screen.getByTestId('nav-test');
 
-    expect(element).toBeInDocument();
+    expect(element).toBeInTheDocument();
   });
 });

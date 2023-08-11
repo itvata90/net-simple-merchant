@@ -18,17 +18,30 @@ export interface DropdownProps extends Partial<DropdownBaseProps> {
  *
  */
 const Dropdown = forwardRef(
-  ({ className, as: Component = 'div', drop = 'down', centered = false, ...otherProps }: DropdownProps, ref) => {
+  (
+    {
+      className,
+      as: Component = 'div',
+      drop = 'down',
+      centered = false,
+      ...otherProps
+    }: DropdownProps,
+    ref
+  ) => {
     let bsPrefix = `drop${drop}`;
 
     return (
       <Component
         {...otherProps}
         ref={ref}
-        className={classNames(bsPrefix, centered && `${bsPrefix}-center`, className)}
+        className={classNames(
+          bsPrefix,
+          centered && `${bsPrefix}-center`,
+          className
+        )}
       />
     );
-  },
+  }
 );
 
 export default Object.assign(Dropdown, {

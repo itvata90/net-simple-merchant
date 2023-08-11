@@ -19,17 +19,32 @@ interface FormProps extends Partial<FormBaseProps> {}
  * @property {FormSelect} Select
  * @property {FormRange} Range
  */
-const Form = forwardRef(({ className, as: Component = 'form', validated, onSubmit, ...otherProps }: FormProps, ref) => {
-  let bsPrefix = 'form';
-  return (
-    <Component
-      {...otherProps}
-      onSubmit={onSubmit}
-      ref={ref}
-      className={classNames(bsPrefix, validated && `was-validated`, className)}
-    />
-  );
-});
+const Form = forwardRef(
+  (
+    {
+      className,
+      as: Component = 'form',
+      validated,
+      onSubmit,
+      ...otherProps
+    }: FormProps,
+    ref
+  ) => {
+    let bsPrefix = 'form';
+    return (
+      <Component
+        {...otherProps}
+        onSubmit={onSubmit}
+        ref={ref}
+        className={classNames(
+          bsPrefix,
+          validated && `was-validated`,
+          className
+        )}
+      />
+    );
+  }
+);
 
 export default Object.assign(Form, {
   Control: FormControl,

@@ -40,11 +40,8 @@ $ dotnet build
 # unit tests
 $ dotnet test
 
-# e2e tests
-$ npm/pnpm run test:e2e
-
-# test coverage
-$ npm/pnpm run test:cov
+# react test
+$ ClientApp/ npm run test
 ```
 
 ## DB
@@ -58,11 +55,6 @@ dotnet ef migrations add InitialCreate -p MerchantAccount.Persistence -s Merchan
 $ dotnet ef database update
 dotnet ef database update -p MerchantAccount.Persistence -s MerchantAccount.Web --context ApplicationDBContext
 ```
-
-## Insomnia/Postman
-
--   Insomnia: import Insomnia.json
--   Postman: import Insomnia.har
 
 ## License
 

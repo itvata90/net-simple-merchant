@@ -8,9 +8,17 @@ interface FormLabelProps extends Partial<FormLabelBaseProps> {}
  * FormLabel component
  *
  */
-const FormLabel = forwardRef(({ className, ...otherProps }: FormLabelProps, ref) => {
-  let bsPrefix = 'form-label';
-  return <label {...otherProps} ref={ref as any} className={classNames(bsPrefix, className)} />;
-});
+const FormLabel = forwardRef(
+  ({ className, ...otherProps }: FormLabelProps, ref) => {
+    let bsPrefix = 'form-label';
+    return (
+      <label
+        {...otherProps}
+        ref={ref as any}
+        className={classNames(bsPrefix, className)}
+      />
+    );
+  }
+);
 
 export default FormLabel;

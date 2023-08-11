@@ -8,13 +8,19 @@ export interface CardLinkProps extends Partial<LinkBaseProps> {}
  * CardLink component
  *
  */
-const CardLink = forwardRef(({ className, children, ...otherProps }: CardLinkProps, ref) => {
-  let bsPrefix = `card-link`;
-  return (
-    <a {...otherProps} ref={ref as any} className={classNames(bsPrefix, className)}>
-      {children}
-    </a>
-  );
-});
+const CardLink = forwardRef(
+  ({ className, children, ...otherProps }: CardLinkProps, ref) => {
+    let bsPrefix = `card-link`;
+    return (
+      <a
+        {...otherProps}
+        ref={ref as any}
+        className={classNames(bsPrefix, className)}
+      >
+        {children}
+      </a>
+    );
+  }
+);
 
 export default CardLink;

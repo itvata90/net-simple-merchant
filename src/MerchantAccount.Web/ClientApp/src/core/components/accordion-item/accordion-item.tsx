@@ -4,7 +4,7 @@ import { ElementType, useEffect, useRef, useState } from 'react';
 import { AccordionBaseProps } from 'src/core/interfaces/components';
 
 export interface AccordionItemProps extends Partial<AccordionBaseProps> {
-  buttonContent: string;
+  buttonContent: string | JSX.Element;
   bsDataParent?: string;
   defaultShow?: boolean;
   headerClassName?: string;
@@ -55,7 +55,12 @@ const AccordionItem = ({
     <Component {...otherProps} className={classNames(bsPrefix, className)}>
       <HeaderComponent className={classNames(bsPrefixHeader, headerClassName)}>
         <button
-          className={classNames(bsPrefixButton, !toggle && 'collapsed', buttonClassName)}
+          type="button"
+          className={classNames(
+            bsPrefixButton,
+            !toggle && 'collapsed',
+            buttonClassName
+          )}
           onClick={() => setToggle(!toggle)}
         >
           {buttonContent}

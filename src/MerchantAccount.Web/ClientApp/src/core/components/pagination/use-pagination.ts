@@ -36,7 +36,7 @@ const usePagination = ({
   const [currentPage, setCurrentPage] = useState<number>(page || 1);
 
   useEffect(() => {
-    setCurrentPage(page);
+    page !== currentPage && setCurrentPage(page);
   }, [page]);
 
   const handleChangePage = (newValue: number) => () => {
@@ -45,22 +45,25 @@ const usePagination = ({
   };
 
   const startBoundaryIndex = Math.min(boundaryCount, count);
-  const endBoundaryIndex = Math.max(count - boundaryCount + 1, boundaryCount + 1);
+  const endBoundaryIndex = Math.max(
+    count - boundaryCount + 1,
+    boundaryCount + 1
+  );
   const siblingsStart = Math.max(
     Math.min(
       // Natural start
       currentPage - siblingCount, // Lower boundary when page is high
-      count - boundaryCount - siblingCount * 2 - 1,
+      count - boundaryCount - siblingCount * 2 - 1
     ), // Greater than startPages
-    boundaryCount + 2,
+    boundaryCount + 2
   );
   const siblingsEnd = Math.min(
     Math.max(
       // Natural end
       currentPage + siblingCount, // Upper boundary when page is low
-      boundaryCount + siblingCount * 2 + 2,
+      boundaryCount + siblingCount * 2 + 2
     ), // Less than endPages
-    count - endBoundaryIndex + 1 > 0 ? endBoundaryIndex - 2 : count - 1,
+    count - endBoundaryIndex + 1 > 0 ? endBoundaryIndex - 2 : count - 1
   );
 
   const items = [];
@@ -84,7 +87,8 @@ const usePagination = ({
   // Ellipse
   siblingsEnd < count - boundaryCount - 1
     ? items.push('ellipse')
-    : count - boundaryCount > boundaryCount && items.push(count - boundaryCount);
+    : count - boundaryCount > boundaryCount &&
+      items.push(count - boundaryCount);
   // Boundary
   for (let i = endBoundaryIndex; i <= count; i++) {
     items.push(i);
@@ -114,7 +118,14 @@ const usePagination = ({
 
     return components[value] ?? value;
   };
-  return { items, currentPage, getPageChange, handleChangePage, getRenderValue };
+
+  return {
+    items,
+    currentPage,
+    getPageChange,
+    handleChangePage,
+    getRenderValue,
+  };
 };
 
 export default usePagination;

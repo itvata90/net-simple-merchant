@@ -1,7 +1,7 @@
 export const filterObjectArrayWithOneQuery = (
   array: Array<{ [key: string | number | symbol]: any }>,
   field: 'all' | string | Array<string>,
-  query?: any,
+  query?: any
 ) => {
   if (typeof query === 'undefined' || query === '') {
     return array;
@@ -10,11 +10,22 @@ export const filterObjectArrayWithOneQuery = (
 
   switch (typeof field) {
     case 'string':
-      const regex = new RegExp(query, 'i');
+      const regex = new RegExp(query, 'i'); //! Bug case: search "+"
       filtered =
         field === 'all'
-          ? array.filter((item: any) => Object.values(item).some((itemField: any) => regex.test(itemField)))
-          : array.filter((i) => i[field] === query);
+          ? array.filter((item: any) =>
+              Object.values(item).some((itemField: any) =>
+                regex.test(itemField)
+              )
+            )
+          : array.filter((i) => {
+              return i[field] instanceof Date
+                ? i[field]?.toDateString() === new Date(query).toDateString() ||
+                    String(i[field]?.toDateString()).includes(query)
+                : String(i[field])
+                    .toLowerCase()
+                    .includes(String(query).toLowerCase());
+            });
       break;
     default: {
       filtered = array;
@@ -27,14 +38,21 @@ type FilterObject = {
   [key: string]: any;
 };
 
-export const filterObjectArrayByFilterObject = <T extends { [key: string]: any }>(
+export const filterObjectArrayByFilterObject = <
+  T extends { [key: string]: any }
+>(
   array: Array<T>,
   filterObject: FilterObject,
   stringType: 'exact' | 'include' = 'exact',
-  caseInsensitive: boolean = false,
+  caseInsensitive: boolean = false
 ) => {
   const compareFunc = {
-    string: (a: string, b: string, type: 'include' | 'exact' = 'exact', caseInsensitive = true) => {
+    string: (
+      a: string,
+      b: string,
+      type: 'include' | 'exact' = 'exact',
+      caseInsensitive = true
+    ) => {
       if (b === '') {
         return true;
       }
@@ -45,7 +63,7 @@ export const filterObjectArrayByFilterObject = <T extends { [key: string]: any }
       return type === 'exact' ? a === b : a.includes(b);
     },
     date: (a: Date, b: Date) => {
-      return a.getTime() === b.getTime();
+      return a?.getTime?.() === b?.getTime?.();
     },
     default: (a: unknown, b: unknown) => a === b,
   };
@@ -53,10 +71,15 @@ export const filterObjectArrayByFilterObject = <T extends { [key: string]: any }
   return array.filter((row) =>
     Object.entries(filterObject).every(([field, keyword]) =>
       typeof row[field] === 'string'
-        ? compareFunc['string'](row[field], keyword, stringType, caseInsensitive)
+        ? compareFunc['string'](
+            row[field],
+            keyword,
+            stringType,
+            caseInsensitive
+          )
         : keyword instanceof Date
         ? compareFunc['date'](row[field], keyword)
-        : compareFunc['default'](row[field], keyword),
-    ),
+        : compareFunc['default'](row[field], keyword)
+    )
   );
 };

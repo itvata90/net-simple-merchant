@@ -1,4 +1,5 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useReducer, useState } from 'react';
+import useDeepComparisonEffect from 'src/core/hooks/use-deep-comparison-effect';
 import useDebounce from './use-debounce';
 
 export enum ORDERS {
@@ -14,7 +15,6 @@ interface FetchState<DataType> {
   data?: DataType;
   error?: string;
   loading?: boolean;
-  response?: any;
 }
 
 // type Cache<DataType> = { [url: string]: DataType };
@@ -32,6 +32,19 @@ type FetchAction<DataType> =
   | { type: 'error'; payload: string }
   | { type: 'update'; payload: DataType };
 
+const getPaginationStringDefault = (page: string | number, limit: string | number): string =>
+  `page=${page}&limit=${limit}`;
+
+const getSortingStringDefault = (fields: Sorting): string => {
+  let sortingString = 'sort=';
+  let fieldArray = [];
+  for (let [fieldName, orderBy] of Object.entries(fields)) {
+    fieldArray.push(orderBy === ORDERS.ASCENDING ? fieldName : '-' + fieldName);
+  }
+  sortingString += fieldArray.join();
+  return sortingString;
+};
+
 /**
  * This is the useSearch hook for getting all data from api with pagination, sorting, and filtering
  * @param fetcher This is a getting all data service callback
@@ -42,31 +55,29 @@ type FetchAction<DataType> =
 const useSearch = <DataType = unknown>(
   // This fetcher callback which get all data within some parameters;
   fetcher: (url: string, config?: { [key: string]: any }) => any,
+  config?: {
+    limit?: number;
+    page?: number;
+    sortBy?: Sorting;
+    searchBy?: { [key: string]: string };
+    searchDelayTime?: number;
+    // This callback get the page and limit as arguments return paging string.
+    getPaginationString?: (page: string | number, limit: string | number) => string;
 
-  // This callback get the page and limit as arguments return paging string.
-  getPaginationString: (page: string | number, limit: string | number) => string = (page, limit) =>
-    `page=${page}&limit=${limit}`,
-
-  // This callback get the array of {fieldName: orderBy} return sorting string.
-  // {username: 'desc, displayName: 'asc'}
-  getSortingString: (fields: Sorting) => string = (fields) => {
-    let sortingString = 'sort=';
-    let fieldArray = [];
-    for (let [fieldName, orderBy] of Object.entries(fields)) {
-      fieldArray.push(orderBy === ORDERS.ASCENDING ? fieldName : '-' + fieldName);
-    }
-    sortingString += fieldArray.join();
-    return sortingString;
+    // This callback get the array of {fieldName: orderBy} return sorting string.
+    // {username: 'desc, displayName: 'asc'}
+    getSortingString?: (fields: Sorting) => string;
   },
-  searchDelayTime: number = 1000,
 ) => {
-  const [limit, setLimit] = useState<number>(5);
-  const [page, setPage] = useState(1);
-  const [sortBy, setSortBy] = useState<Sorting>({});
-  const [searchBy, setSearchBy] = useState<{ [key: string]: string }>({});
+  const [limit, setLimit] = useState<number>(config?.limit ?? 0);
+  const [page, setPage] = useState<number>(config?.page ?? 1);
+  const [sortBy, setSortBy] = useState<Sorting>(config?.sortBy ?? {});
+  const [searchBy, setSearchBy] = useState<{ [key: string]: string }>(config?.searchBy ?? {});
+  const getPaginationString = config?.getPaginationString ?? getPaginationStringDefault;
+  const getSortingString = config?.getSortingString ?? getSortingStringDefault;
   const [reload, setReload] = useState<boolean>(false);
 
-  const debouncedSearchValue = useDebounce(searchBy, searchDelayTime);
+  const debouncedSearchValue = useDebounce(searchBy, config?.searchDelayTime ?? 1000);
 
   const fetchInitialState: FetchState<DataType> = {
     error: undefined,
@@ -77,7 +88,7 @@ const useSearch = <DataType = unknown>(
   const fetchReducer = (state: FetchState<DataType>, action: FetchAction<DataType>): FetchState<DataType> => {
     switch (action.type) {
       case FETCH_ACTIONS.LOADING:
-        return { ...fetchInitialState, loading: true };
+        return fetchInitialState;
       case FETCH_ACTIONS.FULLFIL:
         return { ...fetchInitialState, loading: false, data: action.payload };
       case FETCH_ACTIONS.ERROR:
@@ -91,13 +102,13 @@ const useSearch = <DataType = unknown>(
 
   const [fetchState, fetchDispatch] = useReducer(fetchReducer, fetchInitialState);
 
-  useEffect(() => {
+  useDeepComparisonEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
 
     const getUserList = async (signal: AbortSignal) => {
       try {
-        fetchDispatch({ type: FETCH_ACTIONS.LOADING });
+        fetchInitialState !== fetchState && fetchDispatch({ type: FETCH_ACTIONS.LOADING });
 
         // Prepare api string
         let arrayParams = [];

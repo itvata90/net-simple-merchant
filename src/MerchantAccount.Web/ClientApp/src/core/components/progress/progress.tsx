@@ -5,8 +5,10 @@ import { Color, ProgressBaseProps } from 'src/core/interfaces/components';
 export interface ProgressProps extends Partial<ProgressBaseProps> {
   label?: string;
   color?: Color;
-  variant?: 'stripped' | 'standard';
+  variant?: 'striped' | 'standard';
   barClassName?: string;
+  animated?: boolean;
+  value?: number;
 }
 
 /**
@@ -22,9 +24,12 @@ const Progress = forwardRef(
       children,
       variant = 'standard',
       color,
+      animated,
+      style,
+      value,
       ...otherProps
     }: ProgressProps,
-    ref,
+    ref
   ) => {
     let bsPrefix = `progress`;
     let bsPrefixBar = `progress-bar`;
@@ -36,14 +41,25 @@ const Progress = forwardRef(
             <Component
               {...otherProps}
               ref={ref}
-              className={classNames(bsPrefixBar, color && `${colorPrefix}-${color}`, barClassName)}
+              style={{
+                width: `${value ?? 0}%`,
+                ...style,
+              }}
+              className={classNames(
+                bsPrefixBar,
+                color && `${colorPrefix}-${color}`,
+                variant && `${bsPrefixBar}-${variant}`,
+                animated && `${bsPrefixBar}-animated`,
+
+                barClassName
+              )}
             />
           </div>
         }
       </>
     );
     return <>{component}</>;
-  },
+  }
 );
 
 export default Progress;

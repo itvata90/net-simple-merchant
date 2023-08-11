@@ -16,13 +16,18 @@ export const handleColumnType = (cell: string, column: Column) => {
     case 'decimal':
       let limit = column.decimalLimit ? column.decimalLimit : 2;
 
-      let val = Math.round(Number(cell) * Math.pow(10, limit)) / Math.pow(10, limit);
+      let val =
+        Math.round(Number(cell) * Math.pow(10, limit)) / Math.pow(10, limit);
 
       let parts = val.toString().split('.');
 
-      !parts[1] ? (parts[1] = '0'.repeat(limit)) : (parts[1] = addZeroToString(parts[1], limit));
+      !parts[1]
+        ? (parts[1] = '0'.repeat(limit))
+        : (parts[1] = addZeroToString(parts[1], limit));
 
-      let result = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (parts[1] ? '.' + parts[1] : '');
+      let result =
+        parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',') +
+        (parts[1] ? '.' + parts[1] : '');
 
       return result;
 

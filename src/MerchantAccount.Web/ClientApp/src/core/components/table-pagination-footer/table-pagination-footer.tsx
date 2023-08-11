@@ -21,14 +21,24 @@ const TablePaginationFooter = ({
 }: TablePaginationFooterProps) => {
   useEffect(() => {
     onLimitChange && onLimitChange(limits[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
-    <Card.Footer className="d-flex justify-content-end">
-      <InputGroup aria-label="page-limit" size="sm" style={{ maxWidth: 'fit-content' }} className="d-inline-flex me-1">
+    <Card.Footer className="d-flex flex-wrap gap-1 justify-content-end">
+      <InputGroup
+        aria-label="page-limit"
+        size="sm"
+        style={{ maxWidth: 'fit-content' }}
+        className="d-flex me-1"
+      >
         <FormSelect.Native
           style={{ maxWidth: 130 }}
+          className=""
           placeholder="1"
-          onChange={(e) => (onLimitChange ? onLimitChange(e.target.value) : null)}
+          onChange={(e) =>
+            onLimitChange ? onLimitChange(e.target.value) : null
+          }
           size="sm"
         >
           {limits.map((limit: any) => (
@@ -40,8 +50,9 @@ const TablePaginationFooter = ({
         <InputGroup.Text>/page</InputGroup.Text>
       </InputGroup>
       <Pagination
+        size="sm"
         aria-label="pagination"
-        className="d-inline-flex m-0"
+        className="m-0"
         page={page}
         onChange={onPageChange}
         count={count}

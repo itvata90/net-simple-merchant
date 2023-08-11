@@ -1,6 +1,6 @@
 import useForm from 'src/core/hooks/use-form';
 import useSubmit from 'src/core/hooks/use-submit';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState, useMemo } from 'react';
 import Modal from 'src/core/components/modal/modal';
 import Form from 'src/core/components/form/form';
 import Grid from 'src/core/components/grid/grid';
@@ -13,6 +13,7 @@ import { STATES, useAlert } from 'src/core/hooks/alert-context';
 import ConfirmationDialog from 'src/shared/demo-management/confirmation-dialog';
 import Tooltip from 'src/core/components/tooltip/tooltip';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
+import useFetch from 'src/core/hooks/use-fetch';
 
 export enum ACTIONS {
   EDIT = 'edit',
@@ -20,6 +21,7 @@ export enum ACTIONS {
 }
 
 export const emptyMerchantValues = {
+  id: '',
   name: '',
   status: '',
   province: '',
@@ -27,7 +29,7 @@ export const emptyMerchantValues = {
   street: '',
   email: '',
   phone: '',
-  ownerId: -1,
+  ownerId: '',
 };
 
 interface MerchantFormDialogProps {
@@ -40,10 +42,23 @@ interface MerchantFormDialogProps {
 
 const MerchantFormDialog = memo(
   ({ openDialog, onClose, action, onSubmitSuccess, fieldId }: MerchantFormDialogProps) => {
-    const [initialValues, setInitialValues] = useState<IMerchant>(emptyMerchantValues);
-    const [loadingErrorMsg, setLoadingErrorMsg] = useState<string | undefined>(undefined);
+    const { data, mutate } = useFetch<IMerchant>(
+      `#merchants/${fieldId}`,
+      (_url?: string, config?: any) =>
+        !fieldId || action === ACTIONS.ADD
+          ? emptyMerchantValues
+          : merchantService.getSingle(fieldId, config).then((res) => res.data),
+      {
+        deps: [action, fieldId, openDialog],
+        skipCondition: () => !openDialog,
+      },
+    );
+
+    const initialValues: IMerchant = useMemo(() => data ?? emptyMerchantValues, [data]);
+
     const [openConfirm, setOpenConfirm] = useState(false);
-    const { fieldProps, errors, handleSubmit, values, handleChange, submitState, watch, isDirty } = useSubmit(
+
+    const { fieldProps, errors, handleSubmit, submitState, isDirty, resetForm } = useSubmit(
       useForm({ initialValues }),
       action === ACTIONS.EDIT
         ? fieldId
@@ -51,36 +66,27 @@ const MerchantFormDialog = memo(
           : () => {}
         : merchantService.add,
     );
-    useEffect(() => {
-      setInitialValues({ ...emptyMerchantValues });
-      if (openDialog) {
-        if (action === ACTIONS.EDIT && fieldId) {
-          const getDetail = async () => {
-            try {
-              const response = await merchantService.getSingle(fieldId);
-              response && setInitialValues(response.data);
-            } catch (error: any) {
-              setLoadingErrorMsg(error.message);
-            }
-          };
-          getDetail();
-        }
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [action, fieldId, openDialog]);
 
     const { showMessage } = useAlert();
 
     useEffect(() => {
-      if (!submitState?.loading && submitState?.data) {
+      if (submitState?.loading) {
+        return;
+      } else if (!!submitState?.data) {
+        mutate(submitState?.data);
         onSubmitSuccess && onSubmitSuccess(submitState.data);
         showMessage('Successfully', STATES.SUCCESS);
+        resetForm();
+      } else if (!!submitState?.error) {
+        showMessage('Failed', STATES.ERROR);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [submitState?.loading]);
+
     const handleCloseConfirm = (value: any) => {
       setOpenConfirm(false);
       if (value === 'ok') {
+        resetForm();
         onClose();
       }
     };
@@ -97,22 +103,17 @@ const MerchantFormDialog = memo(
       <>
         <Modal open={openDialog} onClose={handleClose} animation backdrop>
           <Form noValidate onSubmit={handleSubmit}>
-            <Modal.Header as="h5">{action === 'edit' ? 'Edit merchant' : 'Add merchant'}</Modal.Header>
+            <Modal.Header className="d-flex">
+              <h5>{action === ACTIONS.EDIT ? 'Edit merchant' : 'Add merchant'}</h5>
+              <Button onClick={onClose} type="button" className="btn-close" aria-label="Close" size="sm" />
+            </Modal.Header>
 
             <Modal.Body>
-              <Grid row spacing={1}>
-                <Grid item xs={12} sm={6} style={{ display: action === ACTIONS.ADD ? 'none' : 'block' }}>
+              <Grid row spacing={2}>
+                <Grid item xs={12} sm={6}>
                   <div className="form-floating">
-                    <Form.Control
-                      placeholder="Id"
-                      label="Id"
-                      name="id"
-                      {...(fieldProps('id', { required: true }) as any)}
-                      feedbackType={!!errors['id'] ? 'is-invalid' : undefined}
-                      readOnly
-                    />
+                    <Form.Control disabled placeholder="Id" label="Id" name="id" {...(fieldProps('id') as any)} />
                     <Form.Label>Id</Form.Label>
-                    <Feedback>{errors['id']}</Feedback>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -127,7 +128,7 @@ const MerchantFormDialog = memo(
                       }) as any)}
                       feedbackType={!!errors['name'] ? 'is-invalid' : undefined}
                     />
-                    <Form.Label>Name</Form.Label>
+                    <Form.Label>Name*</Form.Label>
                     <Feedback>{errors['name']}</Feedback>
                   </div>
                 </Grid>
@@ -137,14 +138,9 @@ const MerchantFormDialog = memo(
                       placeholder="province"
                       label={'province'}
                       province="province"
-                      {...(fieldProps('province', {
-                        required: true,
-                        maxLength: 27,
-                      }) as any)}
-                      feedbackType={!!errors['province'] ? 'is-invalid' : undefined}
+                      {...(fieldProps('province') as any)}
                     />
                     <Form.Label>Province</Form.Label>
-                    <Feedback>{errors['province']}</Feedback>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -153,14 +149,9 @@ const MerchantFormDialog = memo(
                       placeholder="district"
                       label={'district'}
                       name="district"
-                      {...(fieldProps('district', {
-                        required: true,
-                        maxLength: 27,
-                      }) as any)}
-                      feedbackType={!!errors['district'] ? 'is-invalid' : undefined}
+                      {...(fieldProps('district') as any)}
                     />
                     <Form.Label>District</Form.Label>
-                    <Feedback>{errors['district']}</Feedback>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -169,14 +160,9 @@ const MerchantFormDialog = memo(
                       placeholder="street"
                       label={'street'}
                       name="street"
-                      {...(fieldProps('street', {
-                        required: true,
-                        maxLength: 27,
-                      }) as any)}
-                      feedbackType={!!errors['street'] ? 'is-invalid' : undefined}
+                      {...(fieldProps('street') as any)}
                     />
                     <Form.Label>Street</Form.Label>
-                    <Feedback>{errors['street']}</Feedback>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -187,28 +173,24 @@ const MerchantFormDialog = memo(
                       name="email"
                       {...(fieldProps('email', {
                         required: true,
-                        maxLength: 27,
+                        isEmail: true,
                       }) as any)}
                       feedbackType={!!errors['email'] ? 'is-invalid' : undefined}
                     />
-                    <Form.Label>Email</Form.Label>
-                    <Feedback>{errors['email']}</Feedback>
+                    <Form.Label>Email*</Form.Label>
+                    <Feedback tooltip>
+                      {errors['email'] === 'required'
+                        ? 'Required'
+                        : errors['email'] === 'isEmail'
+                        ? 'invalid email'
+                        : ''}
+                    </Feedback>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <div className="form-floating">
-                    <Form.Control
-                      placeholder="phone"
-                      label={'phone'}
-                      name="phone"
-                      {...(fieldProps('phone', {
-                        required: true,
-                        maxLength: 27,
-                      }) as any)}
-                      feedbackType={!!errors['phone'] ? 'is-invalid' : undefined}
-                    />
+                    <Form.Control placeholder="phone" label={'phone'} name="phone" {...(fieldProps('phone') as any)} />
                     <Form.Label>Phone</Form.Label>
-                    <Feedback>{errors['phone']}</Feedback>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -223,8 +205,8 @@ const MerchantFormDialog = memo(
                       }) as any)}
                       feedbackType={!!errors['ownerId'] ? 'is-invalid' : undefined}
                     />
-                    <Form.Label>OwnerId</Form.Label>
-                    <Feedback>{errors['ownerId']}</Feedback>
+                    <Form.Label>Owner Id*</Form.Label>
+                    <Feedback tooltip>{errors['ownerId'] === 'required' ? 'Required' : ''}</Feedback>
                   </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -233,14 +215,9 @@ const MerchantFormDialog = memo(
                       placeholder="status"
                       label={'status'}
                       name="status"
-                      {...(fieldProps('status', {
-                        required: true,
-                        maxLength: 27,
-                      }) as any)}
-                      feedbackType={!!errors['status'] ? 'is-invalid' : undefined}
+                      {...(fieldProps('status') as any)}
                     />
                     <Form.Label>Status</Form.Label>
-                    <Feedback>{errors['status']}</Feedback>
                   </div>
                 </Grid>
               </Grid>
@@ -260,10 +237,10 @@ const MerchantFormDialog = memo(
           open={openConfirm}
           onClose={handleCloseConfirm}
           backdrop={false}
-          dialogClassName="shadow-lg"
-          content={<p>Are you want to discard changes?</p>}
+          content={<p className="m-0">Do you want to discard changes?</p>}
           cancelText="Back"
           confirmText="Discard"
+          className="pt-3"
           headerText={
             <h5 className="d-flex align-items-center">
               <Tooltip text="Hello">

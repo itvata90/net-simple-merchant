@@ -1,9 +1,25 @@
+interface Response<T> {
+  data: T;
+}
 export interface BaseService<BodyType, ConfigType = any, ReturnType = any> {
-  get: (queryString?: string, config?: ConfigType) => Promise<ReturnType>;
-  getSingle: (id: string | number, config?: ConfigType) => Promise<ReturnType>;
-  add: (body: BodyType, config?: ConfigType) => Promise<ReturnType>;
-  update: (id: string | number, body: BodyType, config?: ConfigType) => Promise<ReturnType>;
-  remove: (id: string | number, config?: ConfigType) => Promise<ReturnType>;
+  get?: (
+    queryString?: string,
+    config?: ConfigType
+  ) => Promise<Response<ReturnType[]>>;
+  getSingle?: (
+    id: string | number,
+    config?: ConfigType
+  ) => Promise<Response<ReturnType>>;
+  add?: (body: BodyType, config?: ConfigType) => Promise<Response<ReturnType>>;
+  update?: (
+    id: string | number,
+    body: BodyType,
+    config?: ConfigType
+  ) => Promise<Response<ReturnType>>;
+  remove?: (
+    id: string | number,
+    config?: ConfigType
+  ) => Promise<Response<ReturnType>>;
 }
 
 export interface Filter {

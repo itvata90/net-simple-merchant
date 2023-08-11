@@ -1,13 +1,19 @@
 import classNames from 'classnames';
-import ListItem, { ListItemProps } from 'src/core/components/list-item/list-item';
-import { Color, HeadingBaseProps, ListBaseProps } from 'src/core/interfaces/components';
+import ListItem, {
+  ListItemProps,
+} from 'src/core/components/list-item/list-item';
+import {
+  Color,
+  HeadingBaseProps,
+  ListBaseProps,
+} from 'src/core/interfaces/components';
 import { ReactNode, useState, useRef, useEffect } from 'react';
 import Collapse from 'src/core/components/collapse/collapse';
 import { BsChevronCompactDown, BsChevronDown } from 'react-icons/bs';
 import classes from 'src/core/components/list/list.module.scss';
 import Button from 'src/core/components/button/button';
 import ListNested from 'src/core/components/list-nested/list-nested';
-interface ItemsObject {
+export interface ItemsObject {
   header?: ReactNode;
   subheader?: ReactNode;
   children?: ItemsObject[];
@@ -16,6 +22,9 @@ interface ItemsObject {
   active?: boolean;
   props?: ListItemProps;
   as?: React.ElementType<any>;
+  collapsible?: boolean;
+  draggable?: boolean;
+  collapsed?: boolean;
 }
 
 export interface ListProps extends Partial<ListBaseProps> {
@@ -26,7 +35,13 @@ export interface ListProps extends Partial<ListBaseProps> {
   orientation?: 'vertical' | 'horizontal';
 }
 
-const List = ({ as: Component = 'div', color, orientation = 'vertical', className, ...otherProps }: ListProps) => {
+const List = ({
+  as: Component = 'div',
+  color,
+  orientation = 'vertical',
+  className,
+  ...otherProps
+}: ListProps) => {
   let bsPrefix = 'nav nav-pills';
 
   return (
@@ -36,7 +51,7 @@ const List = ({ as: Component = 'div', color, orientation = 'vertical', classNam
         bsPrefix,
         orientation === 'vertical' && 'flex-column',
         color && color === 'light' && `bg-dark`,
-        className,
+        className
       )}
     />
   );

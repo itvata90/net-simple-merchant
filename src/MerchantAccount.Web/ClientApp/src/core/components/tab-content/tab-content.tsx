@@ -9,10 +9,16 @@ export interface TabContentProps extends Partial<CommonProps & AsProp> {
   children?: ReactNode;
 }
 
-const TabPanel = ({ className, as: Component = 'div', ...otherProps }: TabPanelProps) => {
+const TabPanel = ({
+  className,
+  as: Component = 'div',
+  ...otherProps
+}: TabPanelProps) => {
   let bsPrefix = 'tab-panel';
 
-  return <Component {...otherProps} className={classNames(bsPrefix, className)} />;
+  return (
+    <Component {...otherProps} className={classNames(bsPrefix, className)} />
+  );
 };
 
 /**
@@ -27,7 +33,9 @@ const TabContent = ({
 }: TabContentProps) => {
   let bsPrefix = 'tab-content';
 
-  return <Component {...otherProps} className={classNames(bsPrefix, className)} />;
+  return (
+    <Component {...otherProps} className={classNames(bsPrefix, className)} />
+  );
 };
 
 export default Object.assign(TabContent, { Panel: TabPanel });
