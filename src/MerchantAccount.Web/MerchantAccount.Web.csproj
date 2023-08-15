@@ -31,7 +31,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.5" />
 	<ProjectReference Include="..\MerchantAccount.Common\MerchantAccount.Common.csproj" />
 	<ProjectReference Include="..\MerchantAccount.Infrastructure\MerchantAccount.Infrastructure.csproj" />
 	<ProjectReference Include="..\MerchantAccount.Persistence\MerchantAccount.Persistence.csproj" />

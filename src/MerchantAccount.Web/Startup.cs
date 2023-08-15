@@ -38,8 +38,8 @@ namespace MerchantAccount.Web
 						.AllowAnyHeader()
 						.AllowAnyMethod()
 						.SetIsOriginAllowed((host) => true)
-						.AllowCredentials())
-						.WithExposedHeaders("X-Total-Count");
+						.AllowCredentials()
+						.WithExposedHeaders("X-Total-Count"));
 			});
 
 			services.AddApplication();
